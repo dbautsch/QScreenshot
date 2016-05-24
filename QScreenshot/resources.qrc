@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="crop-icon.png">RES/crop-icon.png</file>
+        <file alias="main-icon.png">RES/main-icon.png</file>
+        <file alias="screen-icon.png">RES/screen-icon.png</file>
+    </qresource>
+</RCC>
