@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>565</width>
-    <height>304</height>
+    <width>677</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +27,27 @@
        </property>
        <property name="text">
         <string>A new picture has been taken. What do you want to do next?</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>24bpp - 1920x1080px</string>
        </property>
       </widget>
      </item>

@@ -1,0 +1,5 @@
+main-icon	http://www.flaticon.com/free-icon/photo-camera_148717#term=photo&page=1&position=27
+crop-icon	http://www.flaticon.com/free-icon/crop_143811#term=crop&page=1&position=22
+screen-icon	http://www.flaticon.com/free-icon/monitor_144860#term=screen&page=3&position=43
+file-icon	http://www.flaticon.com/free-icon/diskette_124140#term=file&page=3&position=18
+upload-icon	http://www.flaticon.com/free-icon/computing-cloud_150119#term=upload&page=1&position=70
