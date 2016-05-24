@@ -2,6 +2,7 @@
 #include "ui_MainWindow.h"
 
 #include "AboutDialog.h"
+#include "PictureInfoDialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,12 +10,19 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    pTray   = new QSystemTrayIcon(this);
+    pTray       = new QSystemTrayIcon(this);
+
+    pScreenShot = new ScreenshotCreator(this);
+
+    connect(this, SIGNAL(TakeNewScreenshot(EScreenshotKind)), pScreenShot, SLOT(TakeScreenshot(EScreenshotKind)));
+    connect(pScreenShot, SIGNAL(ImageAvailable(QImage*)), this, SLOT(NewImageAvailable(QImage*)));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete pTray;
+    delete pScreenShot;
 }
 
 void MainWindow::on_toolButton_clicked()
@@ -24,4 +32,25 @@ void MainWindow::on_toolButton_clicked()
     AboutDialog ad;
 
     ad.exec();
+}
+
+void MainWindow::on_toolButton_2_clicked()
+{
+    //!<    take a new screenshot - the entire screen
+
+    emit TakeNewScreenshot(EScreenshotKind::EntireScreen);
+}
+
+void MainWindow::on_toolButton_3_clicked()
+{
+    //!<    take a new screenshot - the part of the screen
+
+    emit TakeNewScreenshot(EScreenshotKind::ScreenPart);
+}
+
+void MainWindow::NewImageAvailable(QImage * pImage)
+{
+    PictureInfoDialog pictureInfoDialog(this);
+
+    pictureInfoDialog.exec();
 }

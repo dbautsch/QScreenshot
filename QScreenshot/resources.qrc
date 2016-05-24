@@ -3,5 +3,7 @@
         <file alias="crop-icon.png">RES/crop-icon.png</file>
         <file alias="main-icon.png">RES/main-icon.png</file>
         <file alias="screen-icon.png">RES/screen-icon.png</file>
+        <file alias="file-icon.png">RES/file-icon.png</file>
+        <file alias="upload-icon.png">RES/upload-icon.png</file>
     </qresource>
 </RCC>

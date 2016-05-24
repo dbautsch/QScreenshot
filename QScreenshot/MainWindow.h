@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 
+#include "ScreenshotCreator.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -14,15 +16,27 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+
     ~MainWindow();
 
 private slots:
-    void on_toolButton_clicked();
+    void                    NewImageAvailable(QImage * pImage);
+
+    void                    on_toolButton_clicked();
+
+    void                    on_toolButton_2_clicked();
+
+    void                    on_toolButton_3_clicked();
+
+signals:
+    void                    TakeNewScreenshot(EScreenshotKind kind);
 
 private:
     Ui::MainWindow      *   ui;
 
     QSystemTrayIcon     *   pTray;
+
+    ScreenshotCreator   *   pScreenShot;
 };
 
 #endif // MAINWINDOW_H
