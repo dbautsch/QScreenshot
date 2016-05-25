@@ -54,6 +54,8 @@ void MainWindow::NewImageAvailable(QPixmap * pImage)
 
     PictureInfoDialog pictureInfoDialog(this);
 
+    connect(&pictureInfoDialog, SIGNAL(SavePictureToFile(QString)), pScreenShot, SLOT(SaveToFile(QString)));
+
     pictureInfoDialog.SetImage(pImage);
     pictureInfoDialog.exec();
 }

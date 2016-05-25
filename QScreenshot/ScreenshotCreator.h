@@ -17,15 +17,19 @@ public:
     ScreenshotCreator(QObject * Parent);
 
 public slots:
-    void    TakeScreenshot(EScreenshotKind kind);
+    void        TakeScreenshot(EScreenshotKind kind);
+
+    void        SaveToFile(const QString & strFileName);
 
 private:
-    void    TakeScreenshot_EntireScreen();
+    QPixmap *   pPixmap;
 
-    void    Takescreenshot_Part();
+    void        TakeScreenshot_EntireScreen();
+
+    void        Takescreenshot_Part();
 
 signals:
-    void    ImageAvailable(QPixmap * pImage);
+    void        ImageAvailable(QPixmap * pImage);
 };
 
 #endif // SCREENSHOTCREATOR_H

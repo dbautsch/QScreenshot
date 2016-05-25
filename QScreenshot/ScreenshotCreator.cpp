@@ -28,7 +28,7 @@ void ScreenshotCreator::TakeScreenshot_EntireScreen()
 {
     QScreen * pScreen   = QGuiApplication::primaryScreen();
 
-    QPixmap * pPixmap   = new QPixmap(pScreen->grabWindow(0));
+    pPixmap             = new QPixmap(pScreen->grabWindow(0));
 
     emit ImageAvailable(pPixmap);
 }
@@ -36,4 +36,11 @@ void ScreenshotCreator::TakeScreenshot_EntireScreen()
 void ScreenshotCreator::Takescreenshot_Part()
 {
 
+}
+
+void ScreenshotCreator::SaveToFile(const QString & strFileName)
+{
+    //!<    save current picture to file
+
+    pPixmap->save(strFileName);
 }

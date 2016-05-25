@@ -49,6 +49,9 @@
        <property name="text">
         <string>24bpp - 1920x1080px</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
       </widget>
      </item>
     </layout>

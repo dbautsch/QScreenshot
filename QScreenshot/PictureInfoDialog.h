@@ -28,6 +28,9 @@ private slots:
 
     void        on_toolButton_clicked();
 
+signals:
+    void    SavePictureToFile(const QString & strFileName);
+
 private:
     Ui::PictureInfoDialog *ui;
 
