@@ -21,6 +21,8 @@ public:
 
     void        showEvent(QShowEvent *);
 
+    void        closeEvent(QCloseEvent *);
+
 private slots:
     void        on_toolButton_2_clicked();
 
