@@ -19,8 +19,13 @@ public:
 public slots:
     void    TakeScreenshot(EScreenshotKind kind);
 
+private:
+    void    TakeScreenshot_EntireScreen();
+
+    void    Takescreenshot_Part();
+
 signals:
-    void    ImageAvailable(QImage * pImage);
+    void    ImageAvailable(QPixmap * pImage);
 };
 
 #endif // SCREENSHOTCREATOR_H

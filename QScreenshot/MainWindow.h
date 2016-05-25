@@ -20,7 +20,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void                    NewImageAvailable(QImage * pImage);
+    void                    NewImageAvailable(QPixmap *pImage);
 
     void                    on_toolButton_clicked();
 

@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pScreenShot = new ScreenshotCreator(this);
 
     connect(this, SIGNAL(TakeNewScreenshot(EScreenshotKind)), pScreenShot, SLOT(TakeScreenshot(EScreenshotKind)));
-    connect(pScreenShot, SIGNAL(ImageAvailable(QImage*)), this, SLOT(NewImageAvailable(QImage*)));
+    connect(pScreenShot, SIGNAL(ImageAvailable(QPixmap*)), this, SLOT(NewImageAvailable(QPixmap*)));
 }
 
 MainWindow::~MainWindow()
@@ -48,9 +48,10 @@ void MainWindow::on_toolButton_3_clicked()
     emit TakeNewScreenshot(EScreenshotKind::ScreenPart);
 }
 
-void MainWindow::NewImageAvailable(QImage * pImage)
+void MainWindow::NewImageAvailable(QPixmap * pImage)
 {
     PictureInfoDialog pictureInfoDialog(this);
 
+    pictureInfoDialog.SetImage(pImage);
     pictureInfoDialog.exec();
 }
