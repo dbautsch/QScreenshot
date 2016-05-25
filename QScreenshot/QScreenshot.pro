@@ -6,7 +6,8 @@
 
 QT       += core gui
 
-QMAKE_CXXFLAGS += -std=c++11
+
+gcc:QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,12 +19,14 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     AboutDialog.cpp \
     ScreenshotCreator.cpp \
-    PictureInfoDialog.cpp
+    PictureInfoDialog.cpp \
+    PicturePreviewWidget.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
     ScreenshotCreator.h \
-    PictureInfoDialog.h
+    PictureInfoDialog.h \
+    PicturePreviewWidget.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \

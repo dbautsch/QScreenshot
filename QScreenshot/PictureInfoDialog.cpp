@@ -22,6 +22,8 @@ void PictureInfoDialog::showEvent(QShowEvent *)
 
 void PictureInfoDialog::closeEvent(QCloseEvent *)
 {
+    ui->widget->UnloadImage();
+
     delete pPixmap;
     pPixmap = NULL;
 }
@@ -47,5 +49,5 @@ void PictureInfoDialog::SetImage(QPixmap * pPixmap)
 
 void PictureInfoDialog::LoadPreview()
 {
-    ui->label_2->setPixmap(*pPixmap);
+    ui->widget->LoadImage(pPixmap);
 }

@@ -50,6 +50,8 @@ void MainWindow::on_toolButton_3_clicked()
 
 void MainWindow::NewImageAvailable(QPixmap * pImage)
 {
+    this->show();
+
     PictureInfoDialog pictureInfoDialog(this);
 
     pictureInfoDialog.SetImage(pImage);
