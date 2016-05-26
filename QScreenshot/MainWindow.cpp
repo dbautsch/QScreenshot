@@ -10,12 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    pTray       = new QSystemTrayIcon(this);
+    bCanClose   = false;
 
     pScreenShot = new ScreenshotCreator(this);
 
     connect(this, SIGNAL(TakeNewScreenshot(EScreenshotKind)), pScreenShot, SLOT(TakeScreenshot(EScreenshotKind)));
     connect(pScreenShot, SIGNAL(ImageAvailable(QPixmap*)), this, SLOT(NewImageAvailable(QPixmap*)));
+
+    CreateTrayIcon();
 }
 
 MainWindow::~MainWindow()
@@ -23,6 +25,18 @@ MainWindow::~MainWindow()
     delete ui;
     delete pTray;
     delete pScreenShot;
+    delete pTrayMenu;
+}
+
+void MainWindow::closeEvent(QCloseEvent * e)
+{
+    if (bCanClose)
+        return;
+
+    e->ignore();
+
+    this->hide();
+    pShowHideProgramAction->setText("Show program");
 }
 
 void MainWindow::on_toolButton_clicked()
@@ -50,7 +64,12 @@ void MainWindow::on_toolButton_3_clicked()
 
 void MainWindow::NewImageAvailable(QPixmap * pImage)
 {
-    this->show();
+    /*!
+     *  A new picture has been taken.
+     *
+     *  \param pImage Pointer to the picture object, must be freed
+     *  after use.
+     */
 
     PictureInfoDialog pictureInfoDialog(this);
 
@@ -58,4 +77,55 @@ void MainWindow::NewImageAvailable(QPixmap * pImage)
 
     pictureInfoDialog.SetImage(pImage);
     pictureInfoDialog.exec();
+}
+
+void MainWindow::CreateTrayIcon()
+{
+    pTray                   = new QSystemTrayIcon(this);
+    pTray->setIcon(QIcon(":/icons/main-icon.png"));
+    pTray->setToolTip("QScreenshot - ready");
+    pTray->setVisible(true);
+
+    connect(pTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(OnTrayActivated(QSystemTrayIcon::ActivationReason)));
+
+    pTrayMenu               = new QMenu(this);
+
+    pShowHideProgramAction  = pTrayMenu->addAction("Show program", this, SLOT(OnTrayShowProgramClick()));
+    pSettingsAction         = pTrayMenu->addAction("Settings", this, SLOT(OnTraySettingsClick()));
+    pQuitProgramAction      = pTrayMenu->addAction("Quit", this, SLOT(OnTrayQuitProgramClick()));
+
+    pTray->setContextMenu(pTrayMenu);
+}
+
+void MainWindow::OnTrayShowProgramClick()
+{
+    if (this->isHidden())
+    {
+        this->show();
+        pShowHideProgramAction->setText("Hide program");
+    }
+    else
+    {
+        this->hide();
+        pShowHideProgramAction->setText("Show program");
+    }
+}
+
+void MainWindow::OnTrayQuitProgramClick()
+{
+    bCanClose = true;
+    this->close();
+}
+
+void MainWindow::OnTraySettingsClick()
+{
+
+}
+
+void MainWindow::OnTrayActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::Trigger)
+    {
+        OnTrayShowProgramClick();
+    }
 }
