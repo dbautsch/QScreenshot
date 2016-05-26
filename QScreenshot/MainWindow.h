@@ -5,6 +5,7 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QCloseEvent>
+#include <QTimer>
 
 #include "ScreenshotCreator.h"
 
@@ -34,6 +35,8 @@ private slots:
 
     void                    OnTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
+    void                    OnShowHideTimer();
+
     void                    on_toolButton_clicked();
 
     void                    on_toolButton_2_clicked();
@@ -58,7 +61,11 @@ private:
 
     QAction             *   pSettingsAction;
 
+    QTimer              *   pShowHideTimer;
+
     bool                    bCanClose;
+
+    EScreenshotKind         screenshotKind;
 
 
     void                    CreateTrayIcon();

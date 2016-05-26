@@ -12,6 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     bCanClose   = false;
 
+    pShowHideTimer  = new QTimer(this);
+    pShowHideTimer->setInterval(300);
+    pShowHideTimer->setSingleShot(true);
+    connect(pShowHideTimer, SIGNAL(timeout()), this, SLOT(OnShowHideTimer()));
+
     pScreenShot = new ScreenshotCreator(this);
 
     connect(this, SIGNAL(TakeNewScreenshot(EScreenshotKind)), pScreenShot, SLOT(TakeScreenshot(EScreenshotKind)));
@@ -52,14 +57,20 @@ void MainWindow::on_toolButton_2_clicked()
 {
     //!<    take a new screenshot - the entire screen
 
-    emit TakeNewScreenshot(EScreenshotKind::EntireScreen);
+    screenshotKind = EScreenshotKind::EntireScreen;
+
+    OnTrayShowProgramClick();
+    pShowHideTimer->start();
 }
 
 void MainWindow::on_toolButton_3_clicked()
 {
     //!<    take a new screenshot - the part of the screen
 
-    emit TakeNewScreenshot(EScreenshotKind::ScreenPart);
+    screenshotKind = EScreenshotKind::ScreenPart;
+
+    OnTrayShowProgramClick();
+    pShowHideTimer->start();
 }
 
 void MainWindow::NewImageAvailable(QPixmap * pImage)
@@ -70,6 +81,8 @@ void MainWindow::NewImageAvailable(QPixmap * pImage)
      *  \param pImage Pointer to the picture object, must be freed
      *  after use.
      */
+
+    OnTrayShowProgramClick();
 
     PictureInfoDialog pictureInfoDialog(this);
 
@@ -128,4 +141,9 @@ void MainWindow::OnTrayActivated(QSystemTrayIcon::ActivationReason reason)
     {
         OnTrayShowProgramClick();
     }
+}
+
+void MainWindow::OnShowHideTimer()
+{
+    emit TakeNewScreenshot(screenshotKind);
 }
