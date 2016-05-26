@@ -23,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(pScreenShot, SIGNAL(ImageAvailable(QPixmap*)), this, SLOT(NewImageAvailable(QPixmap*)));
 
     CreateTrayIcon();
+
+    pSettings   = new SettingsDialog(this);
+    pSettings->setModal(true);
 }
 
 MainWindow::~MainWindow()
@@ -71,6 +74,13 @@ void MainWindow::on_toolButton_3_clicked()
 
     OnTrayShowProgramClick();
     pShowHideTimer->start();
+}
+
+void MainWindow::on_toolButton_4_clicked()
+{
+    //!<    settings button clicked
+
+    OnTraySettingsClick();
 }
 
 void MainWindow::NewImageAvailable(QPixmap * pImage)
@@ -132,7 +142,7 @@ void MainWindow::OnTrayQuitProgramClick()
 
 void MainWindow::OnTraySettingsClick()
 {
-
+    pSettings->exec();
 }
 
 void MainWindow::OnTrayActivated(QSystemTrayIcon::ActivationReason reason)

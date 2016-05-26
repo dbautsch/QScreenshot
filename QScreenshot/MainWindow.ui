@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>QScreenshot</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -97,6 +97,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButton_4">
+        <property name="text">
+         <string>Settings</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QToolButton" name="toolButton">

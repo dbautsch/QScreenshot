@@ -20,17 +20,20 @@ SOURCES += main.cpp\
     AboutDialog.cpp \
     ScreenshotCreator.cpp \
     PictureInfoDialog.cpp \
-    PicturePreviewWidget.cpp
+    PicturePreviewWidget.cpp \
+    SettingsDialog.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
     ScreenshotCreator.h \
     PictureInfoDialog.h \
-    PicturePreviewWidget.h
+    PicturePreviewWidget.h \
+    SettingsDialog.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
-    PictureInfoDialog.ui
+    PictureInfoDialog.ui \
+    SettingsDialog.ui
 
 RESOURCES += \
     resources.qrc

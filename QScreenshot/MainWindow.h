@@ -8,6 +8,7 @@
 #include <QTimer>
 
 #include "ScreenshotCreator.h"
+#include "SettingsDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -43,6 +44,8 @@ private slots:
 
     void                    on_toolButton_3_clicked();
 
+    void on_toolButton_4_clicked();
+
 signals:
     void                    TakeNewScreenshot(EScreenshotKind kind);
 
@@ -54,6 +57,8 @@ private:
     QMenu               *   pTrayMenu;
 
     ScreenshotCreator   *   pScreenShot;
+
+    SettingsDialog      *   pSettings;
 
     QAction             *   pShowHideProgramAction;
 
