@@ -38,10 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     pSettings   = new SettingsDialog(this);
     pSettings->setModal(true);
-
-    Qt::WindowFlags flags = Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint;
-    //flags &= ~ Qt::Dialog;
-    setWindowFlags(flags);
 }
 
 MainWindow::~MainWindow()

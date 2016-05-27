@@ -14,6 +14,20 @@
 
 CaptureRectDrawer::CaptureRectDrawer(QObject *parent) : QObject(parent)
 {
-
+    pScreenRectDialog   = new ScreenRectDialog();
 }
 
+CaptureRectDrawer::~CaptureRectDrawer()
+{
+    delete pScreenRectDialog;
+}
+
+void CaptureRectDrawer::ShowRect()
+{
+    pScreenRectDialog->SetRectPos(QPoint(400, 400));
+    pScreenRectDialog->SetRectSize(320, 240);
+    pScreenRectDialog->EnableRect();
+
+    pScreenRectDialog->show();
+
+}

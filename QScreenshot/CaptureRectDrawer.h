@@ -15,15 +15,24 @@
 
 #include <QObject>
 
+#include "ScreenRectDialog.h"
+
 class CaptureRectDrawer : public QObject
 {
     Q_OBJECT
 public:
-    explicit CaptureRectDrawer(QObject *parent = 0);
+    explicit                CaptureRectDrawer(QObject *parent = 0);
+
+                            ~CaptureRectDrawer();
+
+private:
+    ScreenRectDialog    *   pScreenRectDialog;
 
 signals:
+    void                    RectSubmited(const QRect & r);
 
 public slots:
+    void                    ShowRect();
 };
 
 #endif // CAPTURERECTDRAWER_H

@@ -15,6 +15,8 @@
 
 #include <QObject>
 
+#include "CaptureRectDrawer.h"
+
 enum class EScreenshotKind
 {
     EntireScreen,
@@ -29,19 +31,26 @@ public:
     ScreenshotCreator(QObject * Parent);
 
 public slots:
-    void        TakeScreenshot(EScreenshotKind kind);
+    void                    TakeScreenshot(EScreenshotKind kind);
 
-    void        SaveToFile(const QString & strFileName);
+    void                    SaveToFile(const QString & strFileName);
+
+    void                    CaptureRectSubmited(const QRect & r);
 
 private:
-    QPixmap *   pPixmap;
+    QPixmap             *   pPixmap;
 
-    void        TakeScreenshot_EntireScreen();
+    CaptureRectDrawer   *   pCaptureRectDrawer;
 
-    void        Takescreenshot_Part();
+
+    void                    TakeScreenshot_EntireScreen();
+
+    void                    Takescreenshot_Part();
 
 signals:
-    void        ImageAvailable(QPixmap * pImage);
+    void                    ImageAvailable(QPixmap * pImage);
+
+    void                    ShowCaptureRect();
 };
 
 #endif // SCREENSHOTCREATOR_H

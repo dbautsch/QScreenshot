@@ -19,7 +19,10 @@
 ScreenshotCreator::ScreenshotCreator(QObject *Parent)
     : QObject(Parent)
 {
+    pCaptureRectDrawer = new CaptureRectDrawer(this);
 
+    connect(this, SIGNAL(ShowCaptureRect()), pCaptureRectDrawer, SLOT(ShowRect()));
+    connect(pCaptureRectDrawer, SIGNAL(RectSubmited(QRect)), this, SLOT(CaptureRectSubmited(QRect)));
 }
 
 void ScreenshotCreator::TakeScreenshot(EScreenshotKind kind)
@@ -47,7 +50,7 @@ void ScreenshotCreator::TakeScreenshot_EntireScreen()
 
 void ScreenshotCreator::Takescreenshot_Part()
 {
-
+    emit ShowCaptureRect();
 }
 
 void ScreenshotCreator::SaveToFile(const QString & strFileName)
@@ -55,4 +58,15 @@ void ScreenshotCreator::SaveToFile(const QString & strFileName)
     //!<    save current picture to file
 
     pPixmap->save(strFileName);
+}
+
+void ScreenshotCreator::CaptureRectSubmited(const QRect & r)
+{
+    /*!
+     *  Part of the screen has been submited by user - can
+     *  create screenshot using rect r.
+     *
+     *  \param r Rectangular part of the screen that will be
+     *  saved to QPixmap.
+     */
 }

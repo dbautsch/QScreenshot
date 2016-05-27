@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     PictureInfoDialog.cpp \
     PicturePreviewWidget.cpp \
     SettingsDialog.cpp \
-    CaptureRectDrawer.cpp
+    CaptureRectDrawer.cpp \
+    ScreenRectDialog.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
@@ -30,12 +31,14 @@ HEADERS  += MainWindow.h \
     PictureInfoDialog.h \
     PicturePreviewWidget.h \
     SettingsDialog.h \
-    CaptureRectDrawer.h
+    CaptureRectDrawer.h \
+    ScreenRectDialog.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
     PictureInfoDialog.ui \
-    SettingsDialog.ui
+    SettingsDialog.ui \
+    ScreenRectDialog.ui
 
 RESOURCES += \
     resources.qrc
