@@ -21,14 +21,16 @@ SOURCES += main.cpp\
     ScreenshotCreator.cpp \
     PictureInfoDialog.cpp \
     PicturePreviewWidget.cpp \
-    SettingsDialog.cpp
+    SettingsDialog.cpp \
+    CaptureRectDrawer.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
     ScreenshotCreator.h \
     PictureInfoDialog.h \
     PicturePreviewWidget.h \
-    SettingsDialog.h
+    SettingsDialog.h \
+    CaptureRectDrawer.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
