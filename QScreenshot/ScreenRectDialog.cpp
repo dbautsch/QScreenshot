@@ -10,21 +10,20 @@ ScreenRectDialog::ScreenRectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-
-    setAttribute(Qt::WA_NoSystemBackground);
     setAttribute(Qt::WA_TranslucentBackground);
-    //setAttribute(Qt::WA_PaintOnScreen);
+
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    setAttribute(Qt::WA_NoSystemBackground);
 
     pTimer = new QTimer(this);
-    pTimer->setInterval(500);
+    pTimer->setInterval(350);
     pTimer->setSingleShot(true);
 
     connect(pTimer, SIGNAL(timeout()), this, SLOT(OnTimer()));
 
     bRectEnabled    = false;
-    iW              = 10;
-    iH              = 10;
+    iW              = 100;
+    iH              = 100;
     rectPos         = QPoint(0, 0);
 }
 
@@ -55,31 +54,43 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
 
     QPainter p(this);
 
-    bool bUseR1 = false;
-    bool bUseR2 = false;
-    bool bUseR3 = false;
-    bool bUseR4 = false;
-
     QRect r1, r2, r3, r4;
+
+    QColor color    = QColor(128, 128, 128, 128);
 
     if (rectPos.x() > 0)
     {
-        bUseR1  = true;
+        //  left rect
         r1      = QRect(0, 0, rectPos.x(), this->height());
+        p.fillRect(r1, color);
     }
 
-    if (bUseR1)
+    if (rectPos.y() > 0)
     {
-        p.setBrush(QBrush(QColor(100, 195, 195, 200)));
-        p.fillRect(r1, Qt::DotLine);
+        //  top rect
+        r2      = QRect(rectPos.x(), 0, iW, rectPos.y());
+        p.fillRect(r2, color);
+    }
+
+    if (rectPos.y() + iH < this->height())
+    {
+        //  bottom rect
+        r3      = QRect(rectPos.x(), rectPos.y() + iH, iW, this->height());
+        p.fillRect(r3, color);
+    }
+
+    if (rectPos.x() + iW < this->width())
+    {
+        //  right rect
+        r4      = QRect(rectPos.x() + iW, 0, this->width(), this->height());
+        p.fillRect(r4, color);
     }
 }
 
 void ScreenRectDialog::OnTimer()
 {
-    QScreen * pScreen   = QGuiApplication::primaryScreen();
-
-    this->setGeometry(pScreen->virtualGeometry());
+    QScreen * s = QApplication::primaryScreen();
+    this->setGeometry(s->virtualGeometry());
 }
 
 void ScreenRectDialog::EnableRect()

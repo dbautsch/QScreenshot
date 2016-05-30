@@ -24,8 +24,8 @@ CaptureRectDrawer::~CaptureRectDrawer()
 
 void CaptureRectDrawer::ShowRect()
 {
-    pScreenRectDialog->SetRectPos(QPoint(400, 400));
-    pScreenRectDialog->SetRectSize(320, 240);
+    pScreenRectDialog->SetRectPos(QPoint(200, 200));
+    pScreenRectDialog->SetRectSize(255, 255);
     pScreenRectDialog->EnableRect();
 
     pScreenRectDialog->show();
