@@ -3,6 +3,7 @@
 
 #include <QScreen>
 #include <QPainter>
+#include <QPainterPath>
 
 ScreenRectDialog::ScreenRectDialog(QWidget *parent) :
     QDialog(parent),
@@ -54,6 +55,18 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
 
     QPainter p(this);
 
+    DrawGrayBackground(&p);
+    DrawTransparentRect(&p);
+    DrawRectInfo(&p);
+}
+
+void ScreenRectDialog::DrawGrayBackground(QPainter * p)
+{
+    /*!
+     *  Draw semi-transparent background, with a central fully transparent window (screen part that will
+     *  be result image).
+     */
+
     QRect r1, r2, r3, r4;
 
     QColor color    = QColor(128, 128, 128, 128);
@@ -62,29 +75,128 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
     {
         //  left rect
         r1      = QRect(0, 0, rectPos.x(), this->height());
-        p.fillRect(r1, color);
+        p->fillRect(r1, color);
     }
 
     if (rectPos.y() > 0)
     {
         //  top rect
         r2      = QRect(rectPos.x(), 0, iW, rectPos.y());
-        p.fillRect(r2, color);
+        p->fillRect(r2, color);
     }
 
     if (rectPos.y() + iH < this->height())
     {
         //  bottom rect
         r3      = QRect(rectPos.x(), rectPos.y() + iH, iW, this->height());
-        p.fillRect(r3, color);
+        p->fillRect(r3, color);
     }
 
     if (rectPos.x() + iW < this->width())
     {
         //  right rect
         r4      = QRect(rectPos.x() + iW, 0, this->width(), this->height());
-        p.fillRect(r4, color);
+        p->fillRect(r4, color);
     }
+}
+
+void ScreenRectDialog::DrawTransparentRect(QPainter * p)
+{
+    /*!
+     *  Draw transparent window and some rulers.
+     */
+
+    static const int iMARGIN    = 10;
+
+    //  left line
+    p->drawLine(QPointF(rectPos.x(), rectPos.y() - iMARGIN), QPointF(rectPos.x(), rectPos.y() + iH + iMARGIN));
+
+    //  top line
+    p->drawLine(QPointF(rectPos.x() - iMARGIN, rectPos.y()), QPointF(rectPos.x() + iW + iMARGIN, rectPos.y()));
+
+    //  right line
+    p->drawLine(QPointF(rectPos.x() + iW, rectPos.y() - iMARGIN), QPointF(rectPos.x() + iW, rectPos.y() + iH + iMARGIN));
+
+    //  bottom line
+    p->drawLine(QPointF(rectPos.x() - iMARGIN, rectPos.y() + iH), QPointF(rectPos.x() + iW + iMARGIN, rectPos.y() + iH));
+}
+
+void ScreenRectDialog::DrawRectInfo(QPainter * p)
+{
+    /*!
+    *   Draw some basic information about new screencapture image like width and height
+    *   or rect position.
+    */
+
+    QString strText = QString::number(iW) + " x " + QString::number(iH);
+
+    QFont oldFont   = p->font();
+    QFont newFont   = oldFont;
+
+    newFont.setFamily("Verdana");
+    newFont.setPixelSize(16);
+    newFont.setBold(true);
+
+    p->setFont(newFont);
+
+    QPoint pos;
+
+    QFontMetrics fm = p->fontMetrics();
+    int iLenPX      = fm.width(strText);
+    int iHeightPX   = fm.height();
+
+    if (rectPos.x() + iW + iLenPX + 10 > this->width())
+    {
+        //  move text to left
+        if (rectPos.x() - iLenPX - 5 < 0)
+        {
+            //  move text inside rect
+            pos.setX(rectPos.x() + 5);
+        }
+        else
+        {
+            pos.setX(rectPos.x() - iLenPX - 5);
+        }
+    }
+    else
+    {
+        pos.setX(rectPos.x() + iW + 5);
+    }
+
+    if (rectPos.y() + iHeightPX + 5 > this->height())
+    {
+        //  move text to bottom
+        if (rectPos.y() - 5 - iHeightPX < 0)
+        {
+            //  move text inside rect
+            pos.setY(rectPos.y() + 5 + iHeightPX);
+        }
+        else
+        {
+            pos.setY(rectPos.y() - 5 - iHeightPX);
+        }
+    }
+    else
+    {
+        pos.setY(rectPos.y() + 5);
+    }
+
+    QPen pen;
+
+    pen.setStyle(Qt::SolidLine);
+    pen.setWidthF(1);
+    pen.setBrush(Qt::black);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    pen.setColor(Qt::white);
+
+    QPainterPath path;
+
+    p->setFont(newFont);
+    p->setPen(pen);
+
+    path.addText(pos.x(), pos.y(), newFont, strText);
+    p->drawPath(path);
 }
 
 void ScreenRectDialog::OnTimer()

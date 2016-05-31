@@ -44,6 +44,13 @@ private:
 
     int                         iW, iH; // rect width & height
 
+
+    void                        DrawGrayBackground(QPainter * p);
+
+    void                        DrawTransparentRect(QPainter * p);
+
+    void                        DrawRectInfo(QPainter * p);
+
 private slots:
     void                        OnTimer();
 };
