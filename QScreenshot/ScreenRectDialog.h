@@ -5,10 +5,20 @@
 #include <QEvent>
 #include <QTimer>
 #include <QPaintEvent>
+#include <QMouseEvent>
 
 namespace Ui {
 class ScreenRectDialog;
 }
+
+enum class ERectHitTest
+{
+    NN,
+    Left,
+    Right,
+    Top,
+    Bottom
+};
 
 class ScreenRectDialog : public QDialog
 {
@@ -24,6 +34,10 @@ public:
     bool                        event(QEvent * e);
 
     void                        paintEvent(QPaintEvent * e);
+
+    void                        mouseMoveEvent(QMouseEvent * e);
+
+    void                        mousePressEvent(QMouseEvent * e);
 
     void                        EnableRect();
 
@@ -50,6 +64,8 @@ private:
     void                        DrawTransparentRect(QPainter * p);
 
     void                        DrawRectInfo(QPainter * p);
+
+    ERectHitTest                RectHitTest(const QPoint & pt);
 
 private slots:
     void                        OnTimer();

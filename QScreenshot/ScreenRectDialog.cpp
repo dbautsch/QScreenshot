@@ -60,6 +60,25 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
     DrawRectInfo(&p);
 }
 
+void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
+{
+    if (e->mouseState != )
+}
+
+void ScreenRectDialog::mousePressEvent(QMouseEvent * e)
+{
+
+}
+
+ERectHitTest ScreenRectDialog::RectHitTest(const QPoint & pt)
+{
+    ERectHitTest ret    = ERectHitTest::NN;
+
+
+
+    return ret;
+}
+
 void ScreenRectDialog::DrawGrayBackground(QPainter * p)
 {
     /*!
