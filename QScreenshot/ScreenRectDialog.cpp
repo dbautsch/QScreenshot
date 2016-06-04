@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QPainterPath>
 
+#define IN_RANGE(val_, minimum_, maximum_) (val_ >= minimum_ && val_ <= maximum_)
+
 ScreenRectDialog::ScreenRectDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ScreenRectDialog)
@@ -35,7 +37,7 @@ ScreenRectDialog::~ScreenRectDialog()
 
 void ScreenRectDialog::showEvent(QShowEvent * )
 {
-
+    currentHitTest  = ERectHitTest::NN;
 }
 
 bool ScreenRectDialog::event(QEvent * e)
@@ -62,19 +64,83 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
 
 void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
 {
-    if (e->mouseState != )
+    bool bLeftDown          = e->buttons().testFlag(Qt::LeftButton);
+
+    if (bLeftDown == false)
+    {
+        //  left mouse button is up, nothing to do
+        return;
+    }
+
+    ERectHitTest hitTest;
+
+    if (currentHitTest == ERectHitTest::NN)
+    {
+        hitTest             = RectHitTest(e->pos());
+        currentHitTest      = hitTest;
+    }
+    else
+    {
+        switch (currentHitTest)
+        {
+        case ERectHitTest::Left:
+        {
+            int iDiff       = rectPos.x() - e->pos().x();
+            rectPos.setX(e->pos().x());
+            iW              += iDiff;
+            break;
+        }
+
+        case ERectHitTest::Top:
+        {
+            int iDiff       = rectPos.y() - e->pos().y();
+            rectPos.setY(e->pos().y());
+            iH              += iDiff;
+            break;
+        }
+
+        case ERectHitTest::Bottom:
+        {
+            iH                  = e->pos().y() - rectPos.y();
+            break;
+        }
+
+        case ERectHitTest::Right:
+        {
+            iW                  = e->pos().x() - rectPos.x();
+            break;
+        }
+
+        case ERectHitTest::NN:
+        {
+            break;
+        }
+        }
+
+        this->repaint();
+    }
 }
 
-void ScreenRectDialog::mousePressEvent(QMouseEvent * e)
+void ScreenRectDialog::mouseReleaseEvent(QMouseEvent *)
 {
-
+    currentHitTest              = ERectHitTest::NN;
 }
 
 ERectHitTest ScreenRectDialog::RectHitTest(const QPoint & pt)
 {
     ERectHitTest ret    = ERectHitTest::NN;
 
+    if (IN_RANGE(pt.x(), rectPos.x() - 5, rectPos.x() + 5))
+        return ERectHitTest::Left;
 
+    if (IN_RANGE(pt.x(), rectPos.x() + iW - 5, rectPos.x() + iW + 5))
+        return ERectHitTest::Right;
+
+    if (IN_RANGE(pt.y(), rectPos.y() - 5, rectPos.y() + 5))
+        return ERectHitTest::Top;
+
+    if (IN_RANGE(pt.y(), rectPos.y() + iH - 5, rectPos.y() + iH + 5))
+        return ERectHitTest::Bottom;
 
     return ret;
 }

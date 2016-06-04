@@ -37,7 +37,7 @@ public:
 
     void                        mouseMoveEvent(QMouseEvent * e);
 
-    void                        mousePressEvent(QMouseEvent * e);
+    void                        mouseReleaseEvent(QMouseEvent *);
 
     void                        EnableRect();
 
@@ -57,6 +57,8 @@ private:
     QPoint                      rectPos;
 
     int                         iW, iH; // rect width & height
+
+    ERectHitTest                currentHitTest;
 
 
     void                        DrawGrayBackground(QPainter * p);
