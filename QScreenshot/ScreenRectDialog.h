@@ -17,7 +17,8 @@ enum class ERectHitTest
     Left,
     Right,
     Top,
-    Bottom
+    Bottom,
+    Center
 };
 
 class ScreenRectDialog : public QDialog

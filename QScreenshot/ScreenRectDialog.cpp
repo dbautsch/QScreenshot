@@ -56,10 +56,16 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
         return;
 
     QPainter p(this);
+    QPixmap px(this->width(), this->height());
+
+    p.begin(&px);
 
     DrawGrayBackground(&p);
     DrawTransparentRect(&p);
     DrawRectInfo(&p);
+
+    p.end();
+    p.drawPixmap(0, 0, this->width(), this->height(), px);
 }
 
 void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
@@ -111,6 +117,13 @@ void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
             break;
         }
 
+        case ERectHitTest::Center:
+        {
+            rectPos.setX(e->pos().x());
+            rectPos.setY(e->pos().y());
+            break;
+        }
+
         case ERectHitTest::NN:
         {
             break;
@@ -141,6 +154,12 @@ ERectHitTest ScreenRectDialog::RectHitTest(const QPoint & pt)
 
     if (IN_RANGE(pt.y(), rectPos.y() + iH - 5, rectPos.y() + iH + 5))
         return ERectHitTest::Bottom;
+
+    if (IN_RANGE(pt.x(), rectPos.x() + 6, rectPos.x() + iW - 6) &&
+        IN_RANGE(pt.y(), rectPos.y() + 6, rectPos.y() + iH - 6))
+    {
+        return ERectHitTest::Center;
+    }
 
     return ret;
 }
@@ -192,6 +211,10 @@ void ScreenRectDialog::DrawTransparentRect(QPainter * p)
      */
 
     static const int iMARGIN    = 10;
+
+    QColor semiTransparent      = QColor(255, 255, 255, 5);
+
+    p->fillRect(QRectF(rectPos.x(), rectPos.y(), iW, iH), semiTransparent);
 
     //  left line
     p->drawLine(QPointF(rectPos.x(), rectPos.y() - iMARGIN), QPointF(rectPos.x(), rectPos.y() + iH + iMARGIN));
