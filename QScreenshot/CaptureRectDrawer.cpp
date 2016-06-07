@@ -15,6 +15,7 @@
 CaptureRectDrawer::CaptureRectDrawer(QObject *parent) : QObject(parent)
 {
     pScreenRectDialog   = new ScreenRectDialog();
+    pScreenRectDialog->SetRectDrawer(this);
 }
 
 CaptureRectDrawer::~CaptureRectDrawer()
@@ -29,5 +30,18 @@ void CaptureRectDrawer::ShowRect()
     pScreenRectDialog->EnableRect();
 
     pScreenRectDialog->show();
+}
 
+void CaptureRectDrawer::HideRect()
+{
+    pScreenRectDialog->close();
+}
+
+void CaptureRectDrawer::CanTakeScreenshoot(const QRect &r)
+{
+    //!<    this function is called by ScreenRectDialogClass,
+    //!     when user has selected rect and double clicked
+    //!     inside it.
+
+    emit RectSubmited(r);
 }

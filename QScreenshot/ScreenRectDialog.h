@@ -11,6 +11,8 @@ namespace Ui {
 class ScreenRectDialog;
 }
 
+class CaptureRectDrawer;
+
 enum class ERectHitTest
 {
     NN,
@@ -40,6 +42,8 @@ public:
 
     void                        mouseReleaseEvent(QMouseEvent *);
 
+    void                        mouseDoubleClickEvent(QMouseEvent * e);
+
     void                        EnableRect();
 
     void                        DisableRect();
@@ -48,7 +52,11 @@ public:
 
     void                        SetRectSize(int iW, int iH);
 
+    void                        SetRectDrawer(CaptureRectDrawer * pCaptureRectDrawer);
+
 private:
+    CaptureRectDrawer       *   pCaptureRectDrawer;
+
     bool                        bRectEnabled;
 
     Ui::ScreenRectDialog    *   ui;

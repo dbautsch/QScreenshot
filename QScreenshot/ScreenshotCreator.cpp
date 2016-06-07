@@ -22,6 +22,7 @@ ScreenshotCreator::ScreenshotCreator(QObject *Parent)
     pCaptureRectDrawer = new CaptureRectDrawer(this);
 
     connect(this, SIGNAL(ShowCaptureRect()), pCaptureRectDrawer, SLOT(ShowRect()));
+    connect(this, SIGNAL(HideCaptureRect()), pCaptureRectDrawer, SLOT(HideRect()));
     connect(pCaptureRectDrawer, SIGNAL(RectSubmited(QRect)), this, SLOT(CaptureRectSubmited(QRect)));
 }
 
@@ -69,4 +70,16 @@ void ScreenshotCreator::CaptureRectSubmited(const QRect & r)
      *  \param r Rectangular part of the screen that will be
      *  saved to QPixmap.
      */
+
+    QScreen * pScreen       = QGuiApplication::primaryScreen();
+
+    QPixmap * pPixmapScreen = new QPixmap(pScreen->grabWindow(0));
+    QPixmap * pPixmapPart   = new QPixmap(pPixmapScreen->copy(r));
+
+    delete pPixmapScreen;
+
+    pPixmap                 = pPixmapPart;
+
+    emit HideCaptureRect();
+    emit ImageAvailable(pPixmap);
 }

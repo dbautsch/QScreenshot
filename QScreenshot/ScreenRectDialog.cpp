@@ -1,5 +1,6 @@
 #include "ScreenRectDialog.h"
 #include "ui_ScreenRectDialog.h"
+#include "CaptureRectDrawer.h"
 
 #include <QScreen>
 #include <QPainter>
@@ -18,16 +19,18 @@ ScreenRectDialog::ScreenRectDialog(QWidget *parent) :
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_NoSystemBackground);
 
-    pTimer = new QTimer(this);
+    pTimer              = new QTimer(this);
     pTimer->setInterval(350);
     pTimer->setSingleShot(true);
 
     connect(pTimer, SIGNAL(timeout()), this, SLOT(OnTimer()));
 
-    bRectEnabled    = false;
-    iW              = 100;
-    iH              = 100;
-    rectPos         = QPoint(0, 0);
+    bRectEnabled        = false;
+    iW                  = 100;
+    iH                  = 100;
+    rectPos             = QPoint(0, 0);
+
+    pCaptureRectDrawer  = NULL;
 }
 
 ScreenRectDialog::~ScreenRectDialog()
@@ -139,6 +142,16 @@ void ScreenRectDialog::mouseReleaseEvent(QMouseEvent *)
     currentHitTest              = ERectHitTest::NN;
     iClickDiff_X                = 0;
     iClickDiff_Y                = 0;
+}
+
+void ScreenRectDialog::mouseDoubleClickEvent(QMouseEvent * e)
+{
+    if (RectHitTest(e->pos()) != ERectHitTest::Center || pCaptureRectDrawer == NULL)
+        return;
+
+    QRect r = QRect(rectPos.x(), rectPos.y(), iW, iH);
+
+    pCaptureRectDrawer->CanTakeScreenshoot(r);
 }
 
 ERectHitTest ScreenRectDialog::RectHitTest(const QPoint & pt)
@@ -334,4 +347,9 @@ void ScreenRectDialog::SetRectSize(int iW, int iH)
 {
     this->iW = iW;
     this->iH = iH;
+}
+
+void ScreenRectDialog::SetRectDrawer(CaptureRectDrawer * pCaptureRectDrawer)
+{
+    this->pCaptureRectDrawer = pCaptureRectDrawer;
 }

@@ -26,13 +26,21 @@ public:
                             ~CaptureRectDrawer();
 
 private:
+    friend class ScreenRectDialog;
+
+
     ScreenRectDialog    *   pScreenRectDialog;
+
+
+    void                    CanTakeScreenshoot(const QRect & r);
 
 signals:
     void                    RectSubmited(const QRect & r);
 
 public slots:
     void                    ShowRect();
+
+    void                    HideRect();
 };
 
 #endif // CAPTURERECTDRAWER_H

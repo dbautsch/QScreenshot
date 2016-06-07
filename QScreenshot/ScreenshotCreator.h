@@ -51,6 +51,8 @@ signals:
     void                    ImageAvailable(QPixmap * pImage);
 
     void                    ShowCaptureRect();
+
+    void                    HideCaptureRect();
 };
 
 #endif // SCREENSHOTCREATOR_H
