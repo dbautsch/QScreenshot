@@ -59,6 +59,8 @@ private:
 
     int                         iW, iH; // rect width & height
 
+    int                         iClickDiff_X, iClickDiff_Y;
+
     ERectHitTest                currentHitTest;
 
 

@@ -56,16 +56,10 @@ void ScreenRectDialog::paintEvent(QPaintEvent * e)
         return;
 
     QPainter p(this);
-    QPixmap px(this->width(), this->height());
-
-    p.begin(&px);
 
     DrawGrayBackground(&p);
     DrawTransparentRect(&p);
     DrawRectInfo(&p);
-
-    p.end();
-    p.drawPixmap(0, 0, this->width(), this->height(), px);
 }
 
 void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
@@ -84,6 +78,12 @@ void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
     {
         hitTest             = RectHitTest(e->pos());
         currentHitTest      = hitTest;
+
+        if (hitTest == ERectHitTest::Center)
+        {
+            iClickDiff_X    = e->pos().x() - rectPos.x();
+            iClickDiff_Y    = e->pos().y() - rectPos.y();
+        }
     }
     else
     {
@@ -119,8 +119,8 @@ void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
 
         case ERectHitTest::Center:
         {
-            rectPos.setX(e->pos().x());
-            rectPos.setY(e->pos().y());
+            rectPos.setX(e->pos().x() - iClickDiff_X);
+            rectPos.setY(e->pos().y() - iClickDiff_Y);
             break;
         }
 
@@ -137,6 +137,8 @@ void ScreenRectDialog::mouseMoveEvent(QMouseEvent * e)
 void ScreenRectDialog::mouseReleaseEvent(QMouseEvent *)
 {
     currentHitTest              = ERectHitTest::NN;
+    iClickDiff_X                = 0;
+    iClickDiff_Y                = 0;
 }
 
 ERectHitTest ScreenRectDialog::RectHitTest(const QPoint & pt)
@@ -173,7 +175,7 @@ void ScreenRectDialog::DrawGrayBackground(QPainter * p)
 
     QRect r1, r2, r3, r4;
 
-    QColor color    = QColor(128, 128, 128, 128);
+    QColor color    = QColor(128, 128, 128, 90);
 
     if (rectPos.x() > 0)
     {
