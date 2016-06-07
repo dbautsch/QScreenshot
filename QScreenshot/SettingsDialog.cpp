@@ -12,6 +12,7 @@
 
 #include "SettingsDialog.h"
 #include "ui_SettingsDialog.h"
+#include "MainWindow.h"
 
 #include <QSettings>
 
@@ -23,8 +24,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-
-    ReadSettings();
 }
 
 SettingsDialog::~SettingsDialog()
@@ -64,6 +63,13 @@ void SettingsDialog::ReadSettings()
 
     ui->horizontalSlider->setValue(settings.value("JPEG_Quality", 80).toInt());
     ui->horizontalSlider_2->setValue(settings.value("PNG_Quality", 7).toInt());
+
+    QPoint ptGeometry;
+
+    ptGeometry.setX(settings.value("GEOMETRY_LEFT", std::numeric_limits<int>::min()).toInt());
+    ptGeometry.setY(settings.value("GEOMETRY_TOP", std::numeric_limits<int>::min()).toInt());
+
+    emit RestoreApplicationGeometry(ptGeometry);
 }
 
 void SettingsDialog::WriteSettings()
@@ -82,4 +88,12 @@ void SettingsDialog::on_horizontalSlider_valueChanged(int value)
 void SettingsDialog::on_horizontalSlider_2_valueChanged(int value)
 {
     ui->label_4->setText(QString::number(value));
+}
+
+void SettingsDialog::SaveApplicationGeometry(const QPoint & ptPos)
+{
+    QSettings settings(SETTINGS_ORGANIZATION, SETTINGS_APPLICATION);
+
+    settings.setValue("GEOMETRY_LEFT", ptPos.x());
+    settings.setValue("GEOMETRY_TOP", ptPos.y());
 }

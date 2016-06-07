@@ -56,10 +56,15 @@ private slots:
 
     void                    on_toolButton_3_clicked();
 
-    void on_toolButton_4_clicked();
+    void                    on_toolButton_4_clicked();
+
+public slots:
+    void                    RestoreApplicationGeometry(const QPoint & ptPos);
 
 signals:
     void                    TakeNewScreenshot(EScreenshotKind kind);
+
+    void                    SaveApplicationGeometry(const QPoint & ptPos);
 
 private:
     Ui::MainWindow      *   ui;

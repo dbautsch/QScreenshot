@@ -30,6 +30,10 @@ public:
 
     void                    closeEvent(QCloseEvent *);
 
+    void                    ReadSettings();
+
+    void                    WriteSettings();
+
 private slots:
     void                    on_pushButton_clicked();
 
@@ -37,17 +41,18 @@ private slots:
 
     void                    on_horizontalSlider_2_sliderMoved(int position);
 
-    void on_horizontalSlider_valueChanged(int value);
+    void                    on_horizontalSlider_valueChanged(int value);
 
-    void on_horizontalSlider_2_valueChanged(int value);
+    void                    on_horizontalSlider_2_valueChanged(int value);
+
+public slots:
+    void                    SaveApplicationGeometry(const QPoint & ptPos);
+
+signals:
+    void                    RestoreApplicationGeometry(const QPoint & ptPos);
 
 private:
-    Ui::SettingsDialog *    ui;
-
-
-    void                    ReadSettings();
-
-    void                    WriteSettings();
+    Ui::SettingsDialog  *    ui;
 };
 
 #endif // SETTINGSDIALOG_H

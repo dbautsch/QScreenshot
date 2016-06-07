@@ -16,6 +16,9 @@
 #include "AboutDialog.h"
 #include "PictureInfoDialog.h"
 
+#include <QScreen>
+#include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -38,6 +41,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     pSettings   = new SettingsDialog(this);
     pSettings->setModal(true);
+
+    connect(this, SIGNAL(SaveApplicationGeometry(QPoint)), pSettings, SLOT(SaveApplicationGeometry(QPoint)));
+    connect(pSettings, SIGNAL(RestoreApplicationGeometry(QPoint)), this, SLOT(RestoreApplicationGeometry(QPoint)));
+
+    pSettings->ReadSettings();
 }
 
 MainWindow::~MainWindow()
@@ -51,7 +59,13 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent * e)
 {
     if (bCanClose)
+    {
+        QRect rcGeometry = this->geometry();
+
+        emit SaveApplicationGeometry(QPoint(rcGeometry.left(), rcGeometry.top()));
+
         return;
+    }
 
     e->ignore();
 
@@ -168,4 +182,26 @@ void MainWindow::OnTrayActivated(QSystemTrayIcon::ActivationReason reason)
 void MainWindow::OnShowHideTimer()
 {
     emit TakeNewScreenshot(screenshotKind);
+}
+
+void MainWindow::RestoreApplicationGeometry(const QPoint & ptPos)
+{
+    QPoint ptPosOK          = ptPos;
+    bool bNeedToSave        = false;
+
+    if (ptPos.x() == std::numeric_limits<int>::min() || ptPos.y() == std::numeric_limits<int>::min())
+    {
+        QScreen * pScreen   = QGuiApplication::primaryScreen();
+        QRect rcGeometry    = this->geometry();
+
+        ptPosOK.setX((pScreen->availableGeometry().width() / 2.0) - (rcGeometry.width() / 2.0));
+        ptPosOK.setY((pScreen->availableGeometry().height() / 2.0) - (rcGeometry.height() / 2.0));
+
+        bNeedToSave         = true;
+    }
+
+    this->setGeometry(ptPosOK.x(), ptPosOK.y(), -1, -1);
+
+    if (bNeedToSave)
+        pSettings->SaveApplicationGeometry(ptPosOK);
 }
