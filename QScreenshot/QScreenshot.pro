@@ -32,7 +32,10 @@ HEADERS  += MainWindow.h \
     PicturePreviewWidget.h \
     SettingsDialog.h \
     CaptureRectDrawer.h \
-    ScreenRectDialog.h
+    ScreenRectDialog.h \
+    ImageUploader.h \
+    ImageUploaders/ImageUploader.h \
+    ImageUploaders/ImageUploadercpp
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
