@@ -22,7 +22,13 @@ PictureInfoDialog::PictureInfoDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    pPixmap = NULL;
+    pPixmap         = NULL;
+    pServicesMenu   = NULL;
+    pImageUploader  = NULL;
+
+    CreateWebServicesMenu();
+
+    ui->toolButton->setMenu(pServicesMenu);
 }
 
 PictureInfoDialog::~PictureInfoDialog()
@@ -76,4 +82,54 @@ void PictureInfoDialog::LoadPreview()
     ui->widget->LoadImage(pPixmap);
 
     ui->label_2->setText(QString::number(pPixmap->width()) + " x " + QString::number(pPixmap->height()));
+}
+
+void PictureInfoDialog::CreateWebServicesMenu()
+{
+    //!<    create popup menu with the list of supported image hosting services
+
+    ServicesList servicesList   = ImageUploader::GetServices();
+
+    if (servicesList.size() == 0)
+        return;
+
+    pServicesMenu               = new QMenu(this);
+
+    foreach (const QString & strService, servicesList)
+    {
+        QAction * pMenuAction   = new QAction(strService, pServicesMenu);
+        pMenuAction->setData(strService);
+
+        connect(pMenuAction, SIGNAL(triggered(bool)), this, SLOT(OnWebServicePopup(bool)));
+
+        pServicesMenu->addAction(pMenuAction);
+    }
+}
+
+void PictureInfoDialog::OnWebServicePopup(bool b)
+{
+    //!<    a menu item of the image hosting services popup has been clicked
+
+    QObject * pSender   = QObject::sender();
+
+    if (pSender == NULL)
+        return;
+
+    QAction * pAction   = dynamic_cast < QAction * > (pSender);
+
+    if (pAction == NULL)
+        return;
+
+    if (pImageUploader != NULL)
+    {
+        delete pImageUploader;
+    }
+
+    //  create the instance of the appropriate image uploader
+    pImageUploader      = ImageUploader::CreateInstance(pAction->data().toString());
+
+    if (pImageUploader)
+    {
+
+    }
 }

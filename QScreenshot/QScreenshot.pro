@@ -26,7 +26,9 @@ SOURCES += main.cpp\
     ScreenRectDialog.cpp \
     ImageUploaders/ImageUploader.cpp \
     SignInDialog.cpp \
-    PasswordsManagerDialog.cpp
+    PasswordsManagerDialog.cpp \
+    ImageUploaders/ImageShackUploader.cpp \
+    PasswordsShelter.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
@@ -38,7 +40,9 @@ HEADERS  += MainWindow.h \
     ScreenRectDialog.h \
     ImageUploaders/ImageUploader.h \
     SignInDialog.h \
-    PasswordsManagerDialog.h
+    PasswordsManagerDialog.h \
+    ImageUploaders/ImageShackUploader.h \
+    PasswordsShelter.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \

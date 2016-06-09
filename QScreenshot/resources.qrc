@@ -6,4 +6,7 @@
         <file alias="file-icon.png">RES/file-icon.png</file>
         <file alias="upload-icon.png">RES/upload-icon.png</file>
     </qresource>
+    <qresource prefix="/services-thumbnails">
+        <file alias="imageshack.us.png">ImageUploaders/Thumbnails/imageshack.us.png</file>
+    </qresource>
 </RCC>
