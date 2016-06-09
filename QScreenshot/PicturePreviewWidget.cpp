@@ -11,6 +11,7 @@
 */
 
 #include "PicturePreviewWidget.h"
+#include "SignInDialog.h"
 
 #include <QPaintEngine>
 #include <QPainter>
