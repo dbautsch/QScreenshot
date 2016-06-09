@@ -23,7 +23,10 @@ SOURCES += main.cpp\
     PicturePreviewWidget.cpp \
     SettingsDialog.cpp \
     CaptureRectDrawer.cpp \
-    ScreenRectDialog.cpp
+    ScreenRectDialog.cpp \
+    ImageUploaders/ImageUploader.cpp \
+    SignInDialog.cpp \
+    PasswordsManagerDialog.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
@@ -33,15 +36,17 @@ HEADERS  += MainWindow.h \
     SettingsDialog.h \
     CaptureRectDrawer.h \
     ScreenRectDialog.h \
-    ImageUploader.h \
     ImageUploaders/ImageUploader.h \
-    ImageUploaders/ImageUploadercpp
+    SignInDialog.h \
+    PasswordsManagerDialog.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
     PictureInfoDialog.ui \
     SettingsDialog.ui \
-    ScreenRectDialog.ui
+    ScreenRectDialog.ui \
+    SignInDialog.ui \
+    PasswordsManagerDialog.ui
 
 RESOURCES += \
     resources.qrc

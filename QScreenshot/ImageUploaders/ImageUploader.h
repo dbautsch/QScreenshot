@@ -1,6 +1,8 @@
 #ifndef IMAGEUPLOADER_H
 #define IMAGEUPLOADER_H
 
+#include <QObject>
+
 enum class EUploadStatus
 {
     GeneralError,
