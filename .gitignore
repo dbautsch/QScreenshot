@@ -29,3 +29,6 @@
 
 # binaries from the builds
 /build*
+
+# extra files
+*.pro.user
