@@ -15,6 +15,12 @@
 
 #include <QString>
 
+/*!
+ * \brief The PasswordsShelter class
+ *
+ *  This class is designed to hold user login and password data
+ *  in a secure way. The passwords are stored encrypted.
+ */
 class PasswordsShelter
 {
 public:
@@ -27,6 +33,12 @@ public:
     void    SetLoginPasswordForService(const QString    & strServiceName,
                                        const QString    & strLogin,
                                        const QString    & strPassword);
+
+private:
+    void    EncryptText(const QString   & strText,
+                        QByteArray      & baEncrypted);
+
+    QString DecryptText(const QByteArray & baEncrypted);
 };
 
 #endif // PASSWORDSSHELTER_H

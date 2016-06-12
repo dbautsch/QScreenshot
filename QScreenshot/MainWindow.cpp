@@ -200,7 +200,9 @@ void MainWindow::RestoreApplicationGeometry(const QPoint & ptPos)
         bNeedToSave         = true;
     }
 
-    this->setGeometry(ptPosOK.x(), ptPosOK.y(), -1, -1);
+    QRect rcGeometry        = this->geometry();
+
+    this->setGeometry(ptPosOK.x(), ptPosOK.y(), rcGeometry.width(), rcGeometry.height());
 
     if (bNeedToSave)
         pSettings->SaveApplicationGeometry(ptPosOK);

@@ -11,6 +11,9 @@
 */
 
 #include "PasswordsShelter.h"
+#include "SettingsDialog.h"
+
+#include <QSettings>
 
 PasswordsShelter::PasswordsShelter()
 {
@@ -25,7 +28,30 @@ bool PasswordsShelter::GetLoginPasswordForService(const QString    & strServiceN
      *  Get the pair - login and password for given web service name from the shelter.
      */
 
-    return true;
+    QSettings settings(SETTINGS_ORGANIZATION, SETTINGS_APPLICATION);
+
+    int iCount                          = settings.beginReadArray("PASSWORDS_SHELTER");
+    bool bFound                         = false;
+
+    for (int i = 0; i < iCount; ++i)
+    {
+        settings.setArrayIndex(i);
+
+        if (settings.value("SERVICE_NAME").toString() != strServiceName)
+        {
+            continue;
+        }
+
+        strLogin                        = settings.value("LOGIN").toString();
+        QByteArray baPasswordEncrypted  = settings.value("PASSWORD").toByteArray();
+
+        strPassword                     = DecryptText(baPasswordEncrypted);
+        bFound                          = true;
+
+        break;
+    }
+
+    return bFound;
 }
 
 void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceName,
@@ -35,4 +61,17 @@ void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceN
     /*!
      *  Save the pair - login and password for given web service to shelter.
      */
+}
+
+void PasswordsShelter::EncryptText(const QString   & strText,
+                                   QByteArray      & baEncrypted)
+{
+    /*!
+    *   Encrypt text using
+    */
+}
+
+QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted)
+{
+
 }

@@ -24,3 +24,23 @@ PasswordsManagerDialog::~PasswordsManagerDialog()
 {
     delete ui;
 }
+
+void PasswordsManagerDialog::on_pushButton_2_clicked()
+{
+    //!<    edit selected login/password pair
+}
+
+void PasswordsManagerDialog::on_pushButton_3_clicked()
+{
+    //!<    delete selected login/password pair
+}
+
+void PasswordsManagerDialog::on_pushButton_clicked()
+{
+    //!<    save results
+}
+
+void PasswordsManagerDialog::on_pushButton_4_clicked()
+{
+    //!<    go to secret passphrase setup dialog
+}

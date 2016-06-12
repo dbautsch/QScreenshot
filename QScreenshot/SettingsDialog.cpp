@@ -16,9 +16,6 @@
 
 #include <QSettings>
 
-static const QString SETTINGS_ORGANIZATION  = QString("Dawid Bautsch");
-static const QString SETTINGS_APPLICATION   = QString("QScreenshot");
-
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog)

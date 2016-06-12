@@ -15,6 +15,9 @@
 
 #include <QDialog>
 
+static const QString SETTINGS_ORGANIZATION  = QString("Dawid Bautsch");
+static const QString SETTINGS_APPLICATION   = QString("QScreenshot");
+
 namespace Ui {
 class SettingsDialog;
 }
