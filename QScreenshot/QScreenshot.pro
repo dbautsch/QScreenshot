@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     SignInDialog.cpp \
     PasswordsManagerDialog.cpp \
     ImageUploaders/ImageShackUploader.cpp \
-    PasswordsShelter.cpp
+    PasswordsShelter.cpp \
+    ImageUploaders/PostImageOrgUploader.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
@@ -42,7 +43,8 @@ HEADERS  += MainWindow.h \
     SignInDialog.h \
     PasswordsManagerDialog.h \
     ImageUploaders/ImageShackUploader.h \
-    PasswordsShelter.h
+    PasswordsShelter.h \
+    ImageUploaders/PostImageOrgUploader.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
