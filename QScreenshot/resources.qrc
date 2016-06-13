@@ -8,5 +8,6 @@
     </qresource>
     <qresource prefix="/services-thumbnails">
         <file alias="imageshack.us.png">ImageUploaders/Thumbnails/imageshack.us.png</file>
+        <file alias="postimage.org.png">ImageUploaders/Thumbnails/postimage.org.png</file>
     </qresource>
 </RCC>
