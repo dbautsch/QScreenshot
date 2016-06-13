@@ -14,6 +14,22 @@
 #define PASSWORDSSHELTER_H
 
 #include <QString>
+#include <QList>
+
+typedef struct
+{
+   QString          strLogin;       //!<    login - plain text
+
+   QByteArray       baPassword;     //!<    password in an encrypted form
+
+   QString          strServiceName; //!<    web service name, eg. imageshack.us
+
+   QByteArray       baIV;           //!<    encryption initialisation vector used to encrypt password,
+                                    //!<    semi-random number generated each time a password is saved
+}
+WebServiceData;
+
+typedef QList < WebServiceData > WebServiceDataList;
 
 /*!
  * \brief The PasswordsShelter class
@@ -26,19 +42,36 @@ class PasswordsShelter
 public:
     PasswordsShelter();
 
-    bool    GetLoginPasswordForService(const QString    & strServiceName,
-                                       QString          & strLogin,
-                                       QString          & strPassword);
+    bool                GetLoginPasswordForService(const QString    & strServiceName,
+                                                   QString          & strLogin,
+                                                   QString          & strPassword);
 
-    void    SetLoginPasswordForService(const QString    & strServiceName,
-                                       const QString    & strLogin,
-                                       const QString    & strPassword);
+    void                SetLoginPasswordForService(const QString    & strServiceName,
+                                                   const QString    & strLogin,
+                                                   const QString    & strPassword);
+
+    void                SetSecretKey(const QString & strSecretSHA);
 
 private:
-    void    EncryptText(const QString   & strText,
-                        QByteArray      & baEncrypted);
+    WebServiceDataList  webServiceDataList;
 
-    QString DecryptText(const QByteArray & baEncrypted);
+    QString             strSecretSHA;
+
+
+    void                ReadWebServiceData();
+
+    void                WriteWebServiceData();
+
+    void                EncryptText(const QString       & strText,
+                                    QByteArray          & baEncrypted,
+                                    const QByteArray    &   baIV);
+
+    QString             DecryptText(const QByteArray    & baEncrypted,
+                                    const QByteArray    & baIV);
+
+    void                GenerateIV(QByteArray & baIV);
+
+    void                IVToByteArray(unsigned char * pucIV, QByteArray * pbaIV);
 };
 
 #endif // PASSWORDSSHELTER_H
