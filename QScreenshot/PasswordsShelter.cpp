@@ -14,7 +14,10 @@
 #include "SettingsDialog.h"
 
 #include <QSettings>
+#include <QDebug>
 #include <openssl/evp.h>
+#include <openssl/bn.h>
+#include <openssl/err.h>
 
 PasswordsShelter::PasswordsShelter()
 {
@@ -40,7 +43,7 @@ bool PasswordsShelter::GetLoginPasswordForService(const QString    & strServiceN
         break;
     }
 
-    return strLogin.isEmpty() == false & strPassword.isEmpty() == false;
+    return (strLogin.isEmpty() == false) && (strPassword.isEmpty() == false);
 }
 
 void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceName,
@@ -57,8 +60,10 @@ void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceN
 
     GenerateIV(baIV);
 
-    foreach (WebServiceData & wsd, webServiceDataList)
+    for (int i = 0; i < webServiceDataList.size(); ++i)
     {
+        WebServiceData & wsd    = webServiceDataList[i];
+
         if (wsd.strServiceName != strServiceName)
             continue;
 
@@ -74,7 +79,7 @@ void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceN
 
     if (!bFound)
     {
-        webServiceDataList.push_back(WebServiceData());
+        //webServiceDataList.push_back(WebServiceData());
 
         WebServiceData & wsd    = webServiceDataList.back();
 
@@ -94,6 +99,8 @@ void PasswordsShelter::EncryptText(const QString    & strText,
     *   Encrypt text using strSecrectSHA key. It is a well known hash of the
     *   passphrase given by user.
     */
+
+
 }
 
 QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted,
@@ -161,10 +168,38 @@ void PasswordsShelter::SetSecretKey(const QString & strSecretSHA)
     this->strSecretSHA = strSecretSHA;
 }
 
-void PasswordsShelter::GenerateIV(QByteArray & baIV)
+bool PasswordsShelter::GenerateIV(QByteArray & baIV)
 {
     //!<    generate initialisation vector using semirandom number generator.
     //!<    \param baIV [out] Initialisation vector.
+
+    BIGNUM * pResult    = BN_new();
+
+    if (pResult == NULL)
+        return false;
+
+    int iResult         = BN_rand(pResult, 128, 0, 0);
+
+    if (iResult == 1)
+    {
+        //  random number has been generated
+        unsigned char ucResult[16];
+
+        if (BN_bn2mpi(pResult, ucResult) != 0)
+        {
+            //  success
+            baIV    = QByteArray(reinterpret_cast<char*>(ucResult), 16);
+        }
+    }
+    else
+    {
+        BN_free(pResult);
+        return false;
+    }
+
+    BN_free(pResult);
+
+    return true;
 }
 
 void PasswordsShelter::IVToByteArray(unsigned char * pucIV, QByteArray * pbaIV)

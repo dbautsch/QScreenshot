@@ -16,6 +16,8 @@
 #include "AboutDialog.h"
 #include "PictureInfoDialog.h"
 
+#include "PasswordsShelter.h"
+
 #include <QScreen>
 #include <QDebug>
 
@@ -46,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(pSettings, SIGNAL(RestoreApplicationGeometry(QPoint)), this, SLOT(RestoreApplicationGeometry(QPoint)));
 
     pSettings->ReadSettings();
+
+    PasswordsShelter p;
 }
 
 MainWindow::~MainWindow()

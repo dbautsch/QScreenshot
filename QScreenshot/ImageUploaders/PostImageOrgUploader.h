@@ -2,6 +2,9 @@
 #define POSTIMAGEORGUPLOADER_H
 
 #include <QObject>
+#include <QPixmap>
+
+#include "ImageUploader.h"
 
 class PostImageOrgUploader : public ImageUploader
 {

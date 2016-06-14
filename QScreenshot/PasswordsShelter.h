@@ -69,7 +69,7 @@ private:
     QString             DecryptText(const QByteArray    & baEncrypted,
                                     const QByteArray    & baIV);
 
-    void                GenerateIV(QByteArray & baIV);
+    bool                GenerateIV(QByteArray & baIV);
 
     void                IVToByteArray(unsigned char * pucIV, QByteArray * pbaIV);
 };
