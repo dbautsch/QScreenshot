@@ -15,7 +15,9 @@
 
 #include <QSettings>
 #include <QDebug>
+#include <QCryptographicHash>
 #include <openssl/evp.h>
+#include <openssl/conf.h>
 #include <openssl/bn.h>
 #include <openssl/err.h>
 
@@ -91,7 +93,7 @@ void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceN
     }
 }
 
-void PasswordsShelter::EncryptText(const QString    & strText,
+bool PasswordsShelter::EncryptText(const QString    & strText,
                                    QByteArray       & baEncrypted,
                                    const QByteArray & baIV)
 {
@@ -100,7 +102,43 @@ void PasswordsShelter::EncryptText(const QString    & strText,
     *   passphrase given by user.
     */
 
+    unsigned char * pucIV           = NULL;
+    unsigned char * pucSecretSHA    = NULL;
+    UCharData inputData, resultData;
+    bool bRET                       = true;
 
+    baEncrypted.clear();
+
+    QByteArray2uchar(baIV, &pucIV);
+    QByteArray2uchar(baSecretSHA, &pucSecretSHA);
+
+    QByteArray baInput;
+
+    baInput.append(strText);
+
+    //  convert input string to unsigned char array
+    inputData.pucData               = new unsigned char [baInput.size()];
+    QByteArray2uchar(baInput, inputData.pucData);
+    inputData.uLen                  = baInput.size();
+
+    ERR_load_crypto_strings();
+    OpenSSL_add_all_algorithms();
+    OPENSSL_config(NULL);
+
+    resultData.pucData              = new unsigned char [baInput.size() * 2];
+
+    if (OpenSSL_Encrypt(&inputData,
+                        pucSecretSHA,
+                        pucIV,
+                        &resultData) == false)
+    {
+        bRET                        = false;
+    }
+
+    delete [] pucIV;
+    delete [] pucSecretSHA;
+
+    return bRET;
 }
 
 QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted,
@@ -113,6 +151,15 @@ QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted,
      *  \param baEncrypted [in] Input data to be decrypted.
      *  \param baIV [in] Initialisation vector used to encrypt the data.
      */
+
+    unsigned char * pucIV           = NULL;
+    unsigned char * pucSecretSHA    = NULL;
+
+    QByteArray2uchar(baIV, &pucIV);
+    QByteArray2uchar(baSecretSHA, &pucSecretSHA);
+
+    delete [] pucIV;
+    delete [] pucSecretSHA;
 
     return "";
 }
@@ -163,9 +210,9 @@ void PasswordsShelter::WriteWebServiceData()
     settings.endArray();
 }
 
-void PasswordsShelter::SetSecretKey(const QString & strSecretSHA)
+void PasswordsShelter::SetSecretKey(const QByteArray & baSecretSHA)
 {
-    this->strSecretSHA = strSecretSHA;
+    this->baSecretSHA = baSecretSHA;
 }
 
 bool PasswordsShelter::GenerateIV(QByteArray & baIV)
@@ -202,9 +249,69 @@ bool PasswordsShelter::GenerateIV(QByteArray & baIV)
     return true;
 }
 
-void PasswordsShelter::IVToByteArray(unsigned char * pucIV, QByteArray * pbaIV)
+QByteArray PasswordsShelter::CalculateSecrectSHA(const QString & strInput)
 {
-    //!<    convert from unsigned char to QByteArray.
-    //!<    \param [in] pucIV
-    //!<    \param [out] pbaIV
+    QByteArray baInput;
+
+    baInput.append(strInput);
+
+    return QCryptographicHash::hash(baInput, QCryptographicHash::Sha256);
+}
+
+void PasswordsShelter::QByteArray2uchar(const QByteArray & ba, unsigned char ** ppucResult)
+{
+    if (ppucResult == NULL)
+        return;
+
+    *ppucResult = new unsigned char [ba.size()];
+
+    for (int i = 0; i < ba.size(); ++i)
+        (*ppucResult)[i]    = ba[i];
+}
+
+void PasswordsShelter::uchar2QByteArray(const unsigned char * pucData, QByteArray & baResult)
+{
+    baResult.clear();
+    baResult.append(reinterpret_cast<const char*>(pucData));
+}
+
+bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
+                                       unsigned char   *   pucKey,
+                                       unsigned char   *   pucIV,
+                                       UCharData       *   pResultData)
+{
+    EVP_CIPHER_CTX * pContext   = NULL;
+
+    pContext                    = EVP_CIPHER_CTX_new();
+
+    if (pContext == NULL)
+    {
+        //  failed to create openssl cipher context
+        return false;
+    }
+
+    if (EVP_EncryptInit(pContext, EVP_aes_256_cbc(), pucKey, pucIV) != 1)
+    {
+        //  an error occured
+        EVP_CIPHER_CTX_free(pContext);
+        return false;
+    }
+
+    int iInputLen               = pInputData->uLen;
+    int iOutputLen              = pResultData->uLen;
+
+    if (EVP_EncryptUpdate(pContext,
+                          pResultData->pucData,
+                          &iOutputLen,
+                          pInputData->pucData,
+                          iInputLen)
+            != 1)
+    {
+        //  failed to encrypt data
+        EVP_CIPHER_CTX_free(pContext);
+    }
+
+    pResultData->uLen           = iOutputLen;
+
+    return true;
 }

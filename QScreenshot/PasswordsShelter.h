@@ -29,6 +29,24 @@ typedef struct
 }
 WebServiceData;
 
+class UCharData
+{
+public:
+    UCharData()
+    {
+        pucData     = NULL;
+    }
+
+    ~UCharData()
+    {
+        delete [] pucData;
+    }
+
+    unsigned char   *   pucData;
+
+    unsigned            uLen;
+};
+
 typedef QList < WebServiceData > WebServiceDataList;
 
 /*!
@@ -50,19 +68,21 @@ public:
                                                    const QString    & strLogin,
                                                    const QString    & strPassword);
 
-    void                SetSecretKey(const QString & strSecretSHA);
+    void                SetSecretKey(const QByteArray &baSecretSHA);
+
+    static QByteArray   CalculateSecrectSHA(const QString & strInput);
 
 private:
     WebServiceDataList  webServiceDataList;
 
-    QString             strSecretSHA;
+    QByteArray          baSecretSHA;   //!<    256 bit secure hash of the password to the shelter
 
 
     void                ReadWebServiceData();
 
     void                WriteWebServiceData();
 
-    void                EncryptText(const QString       & strText,
+    bool                EncryptText(const QString       & strText,
                                     QByteArray          & baEncrypted,
                                     const QByteArray    &   baIV);
 
@@ -71,7 +91,14 @@ private:
 
     bool                GenerateIV(QByteArray & baIV);
 
-    void                IVToByteArray(unsigned char * pucIV, QByteArray * pbaIV);
+    void                QByteArray2uchar(const QByteArray & ba, unsigned char ** ppucResult);
+
+    void                uchar2QByteArray(const unsigned char * pucData, QByteArray & baResult);
+
+    bool                OpenSSL_Encrypt(UCharData       *   pInputData,
+                                        unsigned char   *   pucKey,
+                                        unsigned char   *   pucIV,
+                                        UCharData       *   pResultData);
 };
 
 #endif // PASSWORDSSHELTER_H
