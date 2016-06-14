@@ -24,7 +24,7 @@
 PasswordsShelter::PasswordsShelter()
 {
 #ifdef WANT_SOME_TESTS
-    //
+    //  very simple unit test
     RunTests();
 #endif
 }
