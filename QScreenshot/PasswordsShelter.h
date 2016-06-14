@@ -82,12 +82,12 @@ private:
 
     void                WriteWebServiceData();
 
-    bool                EncryptText(const QString       & strText,
-                                    QByteArray          & baEncrypted,
+    bool                EncryptText(const QString       &   strText,
+                                    QByteArray          &   baEncrypted,
                                     const QByteArray    &   baIV);
 
-    QString             DecryptText(const QByteArray    & baEncrypted,
-                                    const QByteArray    & baIV);
+    QString             DecryptText(const QByteArray    &   baEncrypted,
+                                    const QByteArray    &   baIV);
 
     bool                GenerateIV(QByteArray & baIV);
 
@@ -99,6 +99,14 @@ private:
                                         unsigned char   *   pucKey,
                                         unsigned char   *   pucIV,
                                         UCharData       *   pResultData);
+
+#ifdef WANT_SOME_TESTS
+    bool                TestEncryption(const QByteArray & baIV, const QString & strInputText, QByteArray & baResult);
+
+    bool                TestDecryption(const QByteArray & baIV, const QByteArray & baEncrypted, QString & strResult);
+
+    bool                RunTests();
+#endif
 };
 
 #endif // PASSWORDSSHELTER_H

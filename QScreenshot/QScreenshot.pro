@@ -17,6 +17,8 @@ TEMPLATE = app
 LIBS += -lssl
 LIBS += -lcrypto
 
+DEFINES += WANT_SOME_TESTS;
+
 
 SOURCES += main.cpp\
         MainWindow.cpp \

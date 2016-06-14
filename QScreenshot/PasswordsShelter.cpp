@@ -23,7 +23,10 @@
 
 PasswordsShelter::PasswordsShelter()
 {
-
+#ifdef WANT_SOME_TESTS
+    //
+    RunTests();
+#endif
 }
 
 bool PasswordsShelter::GetLoginPasswordForService(const QString    & strServiceName,
@@ -260,6 +263,14 @@ QByteArray PasswordsShelter::CalculateSecrectSHA(const QString & strInput)
 
 void PasswordsShelter::QByteArray2uchar(const QByteArray & ba, unsigned char ** ppucResult)
 {
+    /*!
+    *   Convert QByteArray to unsigned char. This function allocates memory.
+    *
+    *   \param ba [in] Input data to convert.
+    *   \param ppucResult [out] Output data, the function will allocate needed
+    *       memory for the output.
+    */
+
     if (ppucResult == NULL)
         return;
 
@@ -271,6 +282,14 @@ void PasswordsShelter::QByteArray2uchar(const QByteArray & ba, unsigned char ** 
 
 void PasswordsShelter::uchar2QByteArray(const unsigned char * pucData, QByteArray & baResult)
 {
+    /*!
+    *   Convert unsigned char to QByteArray.
+    *
+    *   \param pucData [in] Input data - array of unsigned chars.
+    *   \param baResult [out] Reference to QByteArray object - function will
+    *       put the result into it.
+    */
+
     baResult.clear();
     baResult.append(reinterpret_cast<const char*>(pucData));
 }
@@ -280,6 +299,15 @@ bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
                                        unsigned char   *   pucIV,
                                        UCharData       *   pResultData)
 {
+    /*!
+     *  Encrypt data using AES 256 bit cipher.
+     *
+     *  \param pInputData [in]
+     *  \param pucKey [in]
+     *  \param pucIV [in]
+     *  \param pResultData [in][out]
+     */
+
     EVP_CIPHER_CTX * pContext   = NULL;
 
     pContext                    = EVP_CIPHER_CTX_new();
@@ -315,3 +343,55 @@ bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
 
     return true;
 }
+
+#ifdef WANT_SOME_TESTS
+bool PasswordsShelter::TestEncryption(const QByteArray & baIV, const QString & strInputText, QByteArray & baResult)
+{
+    return EncryptText(strInputText, baResult, baIV);
+}
+
+bool PasswordsShelter::TestDecryption(const QByteArray & baIV, const QByteArray & baEncrypted, QString & strResult)
+{
+    strResult = DecryptText(baEncrypted, baIV);
+
+    return true;
+}
+
+bool PasswordsShelter::RunTests()
+{
+    QByteArray baSHA;
+    QByteArray baEncrypted;
+    QByteArray baIV;
+    QString strInput = "tekst";
+    QString strDecrypted;
+
+    baSHA.append("haslo");
+
+    SetSecretKey(baSHA);
+
+    GenerateIV(baIV);
+
+    if (TestEncryption(baIV, strInput, baEncrypted) == false)
+    {
+        qDebug() << "Failed to execute TestEncryption()";
+        return false;
+    }
+
+    if (TestDecryption(baIV, baEncrypted, strDecrypted) == false)
+    {
+        qDebug() << "Failed to execute TestDecryption()";
+        return false;
+    }
+
+    if (strInput == strDecrypted)
+    {
+        qDebug() << "Encryption test has been passed.";
+    }
+    else
+    {
+        qDebug() << "Encryption test has failed.";
+    }
+
+    return strInput == strDecrypted;
+}
+#endif
