@@ -121,7 +121,7 @@ bool PasswordsShelter::EncryptText(const QString    & strText,
 
     //  convert input string to unsigned char array
     inputData.pucData               = new unsigned char [baInput.size()];
-    QByteArray2uchar(baInput, inputData.pucData);
+    QByteArray2uchar(baInput, &inputData.pucData);
     inputData.uLen                  = baInput.size();
 
     ERR_load_crypto_strings();
@@ -129,6 +129,7 @@ bool PasswordsShelter::EncryptText(const QString    & strText,
     OPENSSL_config(NULL);
 
     resultData.pucData              = new unsigned char [baInput.size() * 2];
+    resultData.uLen                 = baInput.size() * 2;
 
     if (OpenSSL_Encrypt(&inputData,
                         pucSecretSHA,
@@ -362,11 +363,11 @@ bool PasswordsShelter::RunTests()
     QByteArray baSHA;
     QByteArray baEncrypted;
     QByteArray baIV;
-    QString strInput = "tekst";
+    QString strInput    = "tekst";
     QString strDecrypted;
+    QString strPass     = "test_pass";
 
-    baSHA.append("haslo");
-
+    baSHA               = CalculateSecrectSHA(strPass);
     SetSecretKey(baSHA);
 
     GenerateIV(baIV);
