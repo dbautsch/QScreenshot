@@ -91,9 +91,9 @@ private:
 
     bool                GenerateIV(QByteArray & baIV);
 
-    void                QByteArray2uchar(const QByteArray & ba, unsigned char ** ppucResult);
+    void                QByteArray2UCharData(const QByteArray & ba, UCharData * pData, bool b16Align = true);
 
-    void                uchar2QByteArray(const unsigned char * pucData, QByteArray & baResult);
+    void                UCharData2QByteArray(const UCharData * pData, QByteArray & baResult);
 
     bool                OpenSSL_Encrypt(UCharData       *   pInputData,
                                         unsigned char   *   pucKey,

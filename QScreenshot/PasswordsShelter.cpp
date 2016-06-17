@@ -84,7 +84,7 @@ void PasswordsShelter::SetLoginPasswordForService(const QString    & strServiceN
 
     if (!bFound)
     {
-        //webServiceDataList.push_back(WebServiceData());
+        webServiceDataList.push_back(WebServiceData());
 
         WebServiceData & wsd    = webServiceDataList.back();
 
@@ -105,42 +105,43 @@ bool PasswordsShelter::EncryptText(const QString    & strText,
     *   passphrase given by user.
     */
 
-    unsigned char * pucIV           = NULL;
-    unsigned char * pucSecretSHA    = NULL;
+    UCharData iv, secretHash;
     UCharData inputData, resultData;
     bool bRET                       = true;
 
     baEncrypted.clear();
 
-    QByteArray2uchar(baIV, &pucIV);
-    QByteArray2uchar(baSecretSHA, &pucSecretSHA);
+    QByteArray2UCharData(baIV, &iv);
+    QByteArray2UCharData(baSecretSHA, &secretHash);
 
     QByteArray baInput;
 
     baInput.append(strText);
 
     //  convert input string to unsigned char array
-    inputData.pucData               = new unsigned char [baInput.size()];
-    QByteArray2uchar(baInput, &inputData.pucData);
-    inputData.uLen                  = baInput.size();
+    QByteArray2UCharData(baInput, &inputData, true);
 
     ERR_load_crypto_strings();
     OpenSSL_add_all_algorithms();
     OPENSSL_config(NULL);
 
-    resultData.pucData              = new unsigned char [baInput.size() * 2];
-    resultData.uLen                 = baInput.size() * 2;
+    resultData.uLen                 = (baInput.size() * 2);
+    resultData.uLen                 += resultData.uLen % 16;
+
+    if (resultData.uLen < 16)
+        resultData.uLen             = 16 - resultData.uLen;
+
+    resultData.pucData              = new unsigned char [resultData.uLen];
 
     if (OpenSSL_Encrypt(&inputData,
-                        pucSecretSHA,
-                        pucIV,
+                        secretHash.pucData,
+                        iv.pucData,
                         &resultData) == false)
     {
         bRET                        = false;
     }
 
-    delete [] pucIV;
-    delete [] pucSecretSHA;
+    UCharData2QByteArray(&resultData, baEncrypted);
 
     return bRET;
 }
@@ -155,15 +156,6 @@ QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted,
      *  \param baEncrypted [in] Input data to be decrypted.
      *  \param baIV [in] Initialisation vector used to encrypt the data.
      */
-
-    unsigned char * pucIV           = NULL;
-    unsigned char * pucSecretSHA    = NULL;
-
-    QByteArray2uchar(baIV, &pucIV);
-    QByteArray2uchar(baSecretSHA, &pucSecretSHA);
-
-    delete [] pucIV;
-    delete [] pucSecretSHA;
 
     return "";
 }
@@ -262,7 +254,7 @@ QByteArray PasswordsShelter::CalculateSecrectSHA(const QString & strInput)
     return QCryptographicHash::hash(baInput, QCryptographicHash::Sha256);
 }
 
-void PasswordsShelter::QByteArray2uchar(const QByteArray & ba, unsigned char ** ppucResult)
+void PasswordsShelter::QByteArray2UCharData(const QByteArray & ba, UCharData *pData, bool b16Align)
 {
     /*!
     *   Convert QByteArray to unsigned char. This function allocates memory.
@@ -272,16 +264,31 @@ void PasswordsShelter::QByteArray2uchar(const QByteArray & ba, unsigned char ** 
     *       memory for the output.
     */
 
-    if (ppucResult == NULL)
+    if (pData == NULL)
         return;
 
-    *ppucResult = new unsigned char [ba.size()];
+    if (pData->pucData == NULL)
+    {
+        if (b16Align)
+        {
+            pData->uLen     = ba.size() + (ba.size() % 16);
+
+            if (pData->uLen < 16)
+                pData->uLen += 16 - pData->uLen;
+        }
+        else
+        {
+            pData->uLen     = ba.size();
+        }
+
+        pData->pucData      = new unsigned char [pData->uLen];
+    }
 
     for (int i = 0; i < ba.size(); ++i)
-        (*ppucResult)[i]    = ba[i];
+        pData->pucData[i]   = ba[i];
 }
 
-void PasswordsShelter::uchar2QByteArray(const unsigned char * pucData, QByteArray & baResult)
+void PasswordsShelter::UCharData2QByteArray(const UCharData * pData, QByteArray & baResult)
 {
     /*!
     *   Convert unsigned char to QByteArray.
@@ -292,7 +299,7 @@ void PasswordsShelter::uchar2QByteArray(const unsigned char * pucData, QByteArra
     */
 
     baResult.clear();
-    baResult.append(reinterpret_cast<const char*>(pucData));
+    baResult.append(reinterpret_cast<const char*>(pData->pucData));
 }
 
 bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
@@ -363,7 +370,7 @@ bool PasswordsShelter::RunTests()
     QByteArray baSHA;
     QByteArray baEncrypted;
     QByteArray baIV;
-    QString strInput    = "tekst";
+    QString strInput    = "test";
     QString strDecrypted;
     QString strPass     = "test_pass";
 
