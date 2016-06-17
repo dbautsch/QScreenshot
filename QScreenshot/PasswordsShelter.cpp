@@ -143,6 +143,9 @@ bool PasswordsShelter::EncryptText(const QString    & strText,
 
     UCharData2QByteArray(&resultData, baEncrypted);
 
+    EVP_cleanup();
+    ERR_free_strings();
+
     return bRET;
 }
 
@@ -156,6 +159,9 @@ QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted,
      *  \param baEncrypted [in] Input data to be decrypted.
      *  \param baIV [in] Initialisation vector used to encrypt the data.
      */
+
+    UCharData iv, secretHash;
+    QByteArray baDecrypted;
 
     return "";
 }
@@ -284,6 +290,8 @@ void PasswordsShelter::QByteArray2UCharData(const QByteArray & ba, UCharData *pD
         pData->pucData      = new unsigned char [pData->uLen];
     }
 
+    memset(pData->pucData, 0, pData->uLen);
+
     for (int i = 0; i < ba.size(); ++i)
         pData->pucData[i]   = ba[i];
 }
@@ -313,7 +321,7 @@ bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
      *  \param pInputData [in]
      *  \param pucKey [in]
      *  \param pucIV [in]
-     *  \param pResultData [in][out]
+     *  \param pResultData [out]
      */
 
     EVP_CIPHER_CTX * pContext   = NULL;
@@ -348,6 +356,62 @@ bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
     }
 
     pResultData->uLen           = iOutputLen;
+
+    EVP_CIPHER_CTX_free(pContext);
+
+    return true;
+}
+
+bool PasswordsShelter::OpenSSL_Decrypt(UCharData       *   pInputData,
+                                       unsigned char   *   pucKey,
+                                       unsigned char   *   pucIV,
+                                       UCharData       *   pResultData)
+{
+    /*!
+     *  Decrypt data encrypted using AES256 cipher.
+     *
+     *  \param pInputData [in]
+     *  \param pucKey [in]
+     *  \param pucIV [in]
+     *  \param pResultData [out]
+     */
+
+    EVP_CIPHER_CTX * pContext   = NULL;
+    int iInputLen               = pInputData->uLen;
+    int iOutputLen              = pResultData->uLen;
+
+
+    pContext                    = EVP_CIPHER_CTX_new();
+
+    if (pContext == NULL)
+    {
+        //  failed to create openssl cipher context
+        return false;
+    }
+
+    if (EVP_DecryptInit_ex(pContext,
+                           EVP_aes_256_cbc(),
+                           NULL,
+                           pucKey,
+                           pucIV)
+        != 1)
+    {
+        EVP_CIPHER_CTX_free(pContext);
+
+        return false;
+    }
+
+    if (EVP_DecryptUpdate(pContext,
+                          pInputData->pucData,
+                          &iInputLen,
+                          pResultData->pucData,
+                          iOutputLen)
+        != 1)
+    {
+        EVP_CIPHER_CTX_free(pContext);
+
+        return false;
+    }
 
     return true;
 }

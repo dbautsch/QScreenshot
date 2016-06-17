@@ -35,6 +35,8 @@ public:
     UCharData()
     {
         pucData     = NULL;
+        uLen        = 0;
+        uCapacity   = 0;
     }
 
     ~UCharData()
@@ -42,9 +44,11 @@ public:
         delete [] pucData;
     }
 
-    unsigned char   *   pucData;
+    unsigned char   *   pucData;    //!<    binary data container
 
-    unsigned            uLen;
+    unsigned            uLen;       //!<    current usage of container space in bytes
+
+    unsigned            uCapacity;  //!<    container capacity - total number of bytes allocated
 };
 
 typedef QList < WebServiceData > WebServiceDataList;
@@ -96,6 +100,11 @@ private:
     void                UCharData2QByteArray(const UCharData * pData, QByteArray & baResult);
 
     bool                OpenSSL_Encrypt(UCharData       *   pInputData,
+                                        unsigned char   *   pucKey,
+                                        unsigned char   *   pucIV,
+                                        UCharData       *   pResultData);
+
+    bool                OpenSSL_Decrypt(UCharData       *   pInputData,
                                         unsigned char   *   pucKey,
                                         unsigned char   *   pucIV,
                                         UCharData       *   pResultData);
