@@ -16,6 +16,8 @@
 #include <QSettings>
 #include <QDebug>
 #include <QCryptographicHash>
+#include <QException>
+
 #include <openssl/evp.h>
 #include <openssl/conf.h>
 #include <openssl/bn.h>
@@ -117,6 +119,7 @@ bool PasswordsShelter::EncryptText(const QString    & strText,
     QByteArray baInput;
 
     baInput.append(strText);
+    baInput = baInput.toBase64();
 
     //  convert input string to unsigned char array
     QByteArray2UCharData(baInput, &inputData, true);
@@ -125,13 +128,11 @@ bool PasswordsShelter::EncryptText(const QString    & strText,
     OpenSSL_add_all_algorithms();
     OPENSSL_config(NULL);
 
-    resultData.uLen                 = (baInput.size() * 2);
-    resultData.uLen                 += resultData.uLen % 16;
+    resultData.uCapacity            = baInput.size();
+    resultData.uCapacity            += resultData.uCapacity % 16;
+    resultData.uCapacity            *= 4;
 
-    if (resultData.uLen < 16)
-        resultData.uLen             = 16 - resultData.uLen;
-
-    resultData.pucData              = new unsigned char [resultData.uLen];
+    resultData.pucData              = new unsigned char [resultData.uCapacity];
 
     if (OpenSSL_Encrypt(&inputData,
                         secretHash.pucData,
@@ -161,9 +162,39 @@ QString PasswordsShelter::DecryptText(const QByteArray & baEncrypted,
      */
 
     UCharData iv, secretHash;
+    UCharData inputData, resultData;
     QByteArray baDecrypted;
+    QString strRET;
 
-    return "";
+    QByteArray2UCharData(baIV, &iv);
+    QByteArray2UCharData(baSecretSHA, &secretHash);
+
+    ERR_load_crypto_strings();
+    OpenSSL_add_all_algorithms();
+    OPENSSL_config(NULL);
+
+    QByteArray2UCharData(baEncrypted, &inputData);
+
+    resultData.uCapacity        = baEncrypted.size();
+    resultData.uCapacity        += resultData.uCapacity % 16;
+
+    resultData.pucData          = new unsigned char [resultData.uCapacity];
+
+    if (OpenSSL_Decrypt(&inputData,
+                        secretHash.pucData,
+                        iv.pucData,
+                        &resultData))
+    {
+        UCharData2QByteArray(&resultData, baDecrypted);
+
+        QByteArray baDecoded    = QByteArray::fromBase64(baDecrypted);
+        strRET                  = QString::fromUtf8(baDecoded);
+    }
+
+    EVP_cleanup();
+    ERR_free_strings();
+
+    return strRET;
 }
 
 void PasswordsShelter::ReadWebServiceData()
@@ -277,23 +308,25 @@ void PasswordsShelter::QByteArray2UCharData(const QByteArray & ba, UCharData *pD
     {
         if (b16Align)
         {
-            pData->uLen     = ba.size() + (ba.size() % 16);
+            pData->uCapacity    = ba.size() + (ba.size() % 16);
 
-            if (pData->uLen < 16)
-                pData->uLen += 16 - pData->uLen;
+            if (pData->uCapacity < 16)
+                pData->uCapacity+= 16 - pData->uCapacity;
         }
         else
         {
-            pData->uLen     = ba.size();
+            pData->uCapacity    = ba.size();
         }
 
-        pData->pucData      = new unsigned char [pData->uLen];
+        pData->pucData      = new unsigned char [pData->uCapacity];
     }
 
-    memset(pData->pucData, 0, pData->uLen);
+    memset(pData->pucData, 0, pData->uCapacity);
 
     for (int i = 0; i < ba.size(); ++i)
         pData->pucData[i]   = ba[i];
+
+    pData->uLen             = ba.size() + 1;
 }
 
 void PasswordsShelter::UCharData2QByteArray(const UCharData * pData, QByteArray & baResult)
@@ -307,7 +340,23 @@ void PasswordsShelter::UCharData2QByteArray(const UCharData * pData, QByteArray 
     */
 
     baResult.clear();
-    baResult.append(reinterpret_cast<const char*>(pData->pucData));
+
+    for (unsigned i = 0; i < pData->uLen; ++i)
+    {
+        baResult.append(pData->pucData[i]);
+    }
+}
+
+QString PasswordsShelter::QByteArray2String(const QByteArray & baInput)
+{
+    QString strRET;
+
+    for (int i = 0; i < baInput.size(); ++i)
+    {
+        strRET += QString::number(baInput.at(i)) + " ";
+    }
+
+    return strRET;
 }
 
 bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
@@ -326,6 +375,9 @@ bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
 
     EVP_CIPHER_CTX * pContext   = NULL;
 
+    int iInputLen               = pInputData->uCapacity;
+    int iTotalLen               = 0;
+
     pContext                    = EVP_CIPHER_CTX_new();
 
     if (pContext == NULL)
@@ -341,21 +393,32 @@ bool PasswordsShelter::OpenSSL_Encrypt(UCharData       *   pInputData,
         return false;
     }
 
-    int iInputLen               = pInputData->uLen;
-    int iOutputLen              = pResultData->uLen;
-
     if (EVP_EncryptUpdate(pContext,
                           pResultData->pucData,
-                          &iOutputLen,
+                          &iTotalLen,
                           pInputData->pucData,
                           iInputLen)
             != 1)
     {
         //  failed to encrypt data
         EVP_CIPHER_CTX_free(pContext);
+
+        return false;
     }
 
-    pResultData->uLen           = iOutputLen;
+    int iExtraLen               = 0;
+
+    if (EVP_EncryptFinal_ex(pContext,
+                            pResultData->pucData + iTotalLen,
+                            &iExtraLen) != 1)
+    {
+        //  failed to encrypt data
+        EVP_CIPHER_CTX_free(pContext);
+
+        return false;
+    }
+
+    pResultData->uLen           = iTotalLen + iExtraLen;
 
     EVP_CIPHER_CTX_free(pContext);
 
@@ -378,7 +441,7 @@ bool PasswordsShelter::OpenSSL_Decrypt(UCharData       *   pInputData,
 
     EVP_CIPHER_CTX * pContext   = NULL;
     int iInputLen               = pInputData->uLen;
-    int iOutputLen              = pResultData->uLen;
+    int iOutputLen              = pResultData->uCapacity;
 
 
     pContext                    = EVP_CIPHER_CTX_new();
@@ -402,15 +465,19 @@ bool PasswordsShelter::OpenSSL_Decrypt(UCharData       *   pInputData,
     }
 
     if (EVP_DecryptUpdate(pContext,
-                          pInputData->pucData,
-                          &iInputLen,
                           pResultData->pucData,
-                          iOutputLen)
+                          &iOutputLen,
+                          pInputData->pucData,
+                          iInputLen)
         != 1)
     {
         EVP_CIPHER_CTX_free(pContext);
 
         return false;
+    }
+    else
+    {
+        pResultData->uLen   = iOutputLen;
     }
 
     return true;
@@ -426,7 +493,7 @@ bool PasswordsShelter::TestDecryption(const QByteArray & baIV, const QByteArray 
 {
     strResult = DecryptText(baEncrypted, baIV);
 
-    return true;
+    return (strResult.isEmpty() == false);
 }
 
 bool PasswordsShelter::RunTests()
@@ -434,36 +501,94 @@ bool PasswordsShelter::RunTests()
     QByteArray baSHA;
     QByteArray baEncrypted;
     QByteArray baIV;
-    QString strInput    = "test";
+
+    QList < QString > inputData = {
+
+        QStringLiteral("Mogę jeść szkło, i mi nie szkodzi."),
+        QStringLiteral("śðóæśðłłśðąśćłżźl"),
+        QStringLiteral("Sîne klâwen durh die wolken sint geslagen"),
+        QStringLiteral("er stîget ûf mit grôzer kraft"),
+        QStringLiteral("Τη γλώσσα μου έδωσαν ελληνική"),
+        QStringLiteral("από το Άξιον Εστί"),
+        QStringLiteral("На берегу пустынных волн"),
+        QStringLiteral("Стоял он, дум великих полн"),
+        QStringLiteral("ვეპხის ტყაოსანი შოთა რუსთაველი"),
+        QStringLiteral("ღმერთსი შემვედრე, ნუთუ კვლა დამხსნას სოფლისა"),
+        QStringLiteral("யாமறிந்த மொழிகளிலே தமிழ்மொழி போல் இனிதாவது எங்கும் காணோம்"),
+        QStringLiteral("பாமரராய் விலங்குகளாய், உலகனைத்தும் இகழ்ச்சிசொலப் பான்மை கெட்டு"),
+        QStringLiteral("काचं शक्नोम्यत्तुम् । नोपहिनस्ति माम् ॥"),
+        QStringLiteral("Jeg kan spise glas, det gør ikke ondt på mig."),
+        QStringLiteral(" kå Glas frässa, ond des macht mr nix!"),
+        QStringLiteral("אני יכול לאכול זכוכית וזה לא מזיק לי"),
+        QStringLiteral("Би шил идэй чадна, надад хортой биш"),
+        QStringLiteral("ᐊᓕᒍᖅ ᓂᕆᔭᕌᖓᒃᑯ ᓱᕋᙱᑦᑐᓐᓇᖅᑐᖓ")
+    };
+
     QString strDecrypted;
-    QString strPass     = "test_pass";
+    QString strPass     = "UltraStrongP4ssw0rD!12ążć";
 
     baSHA               = CalculateSecrectSHA(strPass);
     SetSecretKey(baSHA);
 
     GenerateIV(baIV);
+    bool bOK            = true;
 
-    if (TestEncryption(baIV, strInput, baEncrypted) == false)
+    for (int i = 0; i < inputData.size(); ++i)
     {
-        qDebug() << "Failed to execute TestEncryption()";
-        return false;
+        if (TestEncryption(baIV, inputData.at(i), baEncrypted) == false)
+        {
+            qDebug() << "Failed to execute TestEncryption()";
+            return false;
+        }
+
+        if (TestDecryption(baIV, baEncrypted, strDecrypted) == false)
+        {
+            qDebug() << "Failed to execute TestDecryption()";
+            return false;
+        }
+
+        if (inputData.at(i) != strDecrypted)
+        {
+            bOK         = false;
+
+            qDebug() << "Failed to decrypt `" << inputData.at(i) << "`" << ", decrypted=`" << strDecrypted << "`";
+        }
     }
 
-    if (TestDecryption(baIV, baEncrypted, strDecrypted) == false)
+    if (bOK)
     {
-        qDebug() << "Failed to execute TestDecryption()";
-        return false;
-    }
-
-    if (strInput == strDecrypted)
-    {
-        qDebug() << "Encryption test has been passed.";
+        qDebug() << "All encryption tests has been passed.";
     }
     else
     {
-        qDebug() << "Encryption test has failed.";
+        qDebug() << "Some of the encryption tests has failed.";
     }
 
-    return strInput == strDecrypted;
+    return bOK;
 }
+
+void PasswordsShelter::PrintQByteArray(const QByteArray & ba, const QString & strName)
+{
+    QString str = "QByteArray(" + strName + "): ";
+
+    for (int i = 0; i < ba.size(); ++i)
+    {
+        str     += QString::number(ba.at(i)) + " ";
+    }
+
+    qDebug() << str;
+}
+
+void PasswordsShelter::PrintUCharData(const UCharData & data, const QString & strName)
+{
+    QString str = "UCharData(" + strName + "): ";
+
+    for (unsigned i = 0; i < data.uLen; ++i)
+    {
+        str     += QString::number(data.pucData[i]) + " ";
+    }
+
+    qDebug() << str;
+}
+
 #endif

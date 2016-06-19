@@ -17,7 +17,8 @@ TEMPLATE = app
 LIBS += -lssl
 LIBS += -lcrypto
 
-DEFINES += WANT_SOME_TESTS
+# please uncomment this to enable some simple unit tests
+#DEFINES += WANT_SOME_TESTS
 
 
 SOURCES += main.cpp\

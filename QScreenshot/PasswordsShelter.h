@@ -99,6 +99,8 @@ private:
 
     void                UCharData2QByteArray(const UCharData * pData, QByteArray & baResult);
 
+    QString             QByteArray2String(const QByteArray & baInput);
+
     bool                OpenSSL_Encrypt(UCharData       *   pInputData,
                                         unsigned char   *   pucKey,
                                         unsigned char   *   pucIV,
@@ -115,6 +117,10 @@ private:
     bool                TestDecryption(const QByteArray & baIV, const QByteArray & baEncrypted, QString & strResult);
 
     bool                RunTests();
+
+    void                PrintQByteArray(const QByteArray & ba, const QString & strName = QString());
+
+    void                PrintUCharData(const UCharData & data, const QString & strName = QString());
 #endif
 };
 
