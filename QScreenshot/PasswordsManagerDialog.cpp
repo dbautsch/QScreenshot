@@ -44,3 +44,8 @@ void PasswordsManagerDialog::on_pushButton_4_clicked()
 {
     //!<    go to secret passphrase setup dialog
 }
+
+void PasswordsManagerDialog::on_pushButton_5_clicked()
+{
+    //!<    create new login/password pair for given service name
+}

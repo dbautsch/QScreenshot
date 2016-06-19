@@ -18,6 +18,7 @@
 #include <QMenu>
 
 #include "ImageUploaders/ImageUploader.h"
+#include "PasswordsShelter.h"
 
 namespace Ui {
 class PictureInfoDialog;
@@ -28,39 +29,43 @@ class PictureInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit            PictureInfoDialog(QWidget *parent = 0);
+    explicit                PictureInfoDialog(QWidget *parent = 0);
 
-                        ~PictureInfoDialog();
+                            ~PictureInfoDialog();
 
-    void                SetImage(QPixmap * pPixmap);
+    void                    SetImage(QPixmap * pPixmap);
 
-    void                showEvent(QShowEvent *);
+    void                    SetPasswordsShelter(PasswordsShelter * pPasswordsShelter);
 
-    void                closeEvent(QCloseEvent *);
+    void                    showEvent(QShowEvent *);
+
+    void                    closeEvent(QCloseEvent *);
 
 private slots:
-    void                OnWebServicePopup(bool b);
+    void                    OnWebServicePopup(bool b);
 
-    void                on_toolButton_2_clicked();
+    void                    on_toolButton_2_clicked();
 
-    void                on_toolButton_clicked();
+    void                    on_toolButton_clicked();
 
 signals:
-    void                SavePictureToFile(const QString & strFileName);
+    void                    SavePictureToFile(const QString & strFileName);
 
 private:
     Ui::PictureInfoDialog *ui;
 
-    QPixmap         *   pPixmap;
+    QPixmap             *   pPixmap;
 
-    QMenu           *   pServicesMenu;
+    QMenu               *   pServicesMenu;
 
-    ImageUploader   *   pImageUploader;
+    ImageUploader       *   pImageUploader;
+
+    PasswordsShelter    *   pPasswordsShelter;
 
 
-    void                LoadPreview();
+    void                    LoadPreview();
 
-    void                CreateWebServicesMenu();
+    void                    CreateWebServicesMenu();
 };
 
 #endif // PICTUREINFODIALOG_H

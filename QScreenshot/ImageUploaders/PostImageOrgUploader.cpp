@@ -22,3 +22,13 @@ QString PostImageOrgUploader::GetServiceName()
 {
     return QString("postimage.org");
 }
+
+bool PostImageOrgUploader::CanUseLoginData()
+{
+    return true;
+}
+
+bool PostImageOrgUploader::NeedLoginData()
+{
+    return false;
+}

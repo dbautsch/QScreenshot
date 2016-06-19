@@ -64,6 +64,8 @@ class PasswordsShelter
 public:
     PasswordsShelter();
 
+    ~PassswordsShelter();
+
     bool                GetLoginPasswordForService(const QString    & strServiceName,
                                                    QString          & strLogin,
                                                    QString          & strPassword);

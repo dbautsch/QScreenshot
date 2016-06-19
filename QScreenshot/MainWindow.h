@@ -21,6 +21,7 @@
 
 #include "ScreenshotCreator.h"
 #include "SettingsDialog.h"
+#include "PasswordsShelter.h"
 
 namespace Ui {
 class MainWindow;
@@ -84,6 +85,8 @@ private:
     QAction             *   pSettingsAction;
 
     QTimer              *   pShowHideTimer;
+
+    PasswordsShelter    *   pPasswordsShelter;
 
     bool                    bCanClose;
 

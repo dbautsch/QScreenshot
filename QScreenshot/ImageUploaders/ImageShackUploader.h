@@ -31,6 +31,10 @@ public:
     virtual QPixmap             GetServiceThumbnail();
 
     virtual QString             GetServiceName();
+
+    virtual bool                CanUseLoginData();
+
+    virtual bool                NeedLoginData();
 };
 
 #endif // IMAGESHACKUPLOADER_H

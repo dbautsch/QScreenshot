@@ -22,9 +22,10 @@ PictureInfoDialog::PictureInfoDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    pPixmap         = NULL;
-    pServicesMenu   = NULL;
-    pImageUploader  = NULL;
+    pPixmap             = NULL;
+    pServicesMenu       = NULL;
+    pImageUploader      = NULL;
+    pPasswordsShelter   = NULL;
 
     CreateWebServicesMenu();
 
@@ -69,12 +70,17 @@ void PictureInfoDialog::on_toolButton_clicked()
 {
     //!<    upload to web clicked
 
-
+    //  !TODO!
 }
 
 void PictureInfoDialog::SetImage(QPixmap * pPixmap)
 {
     this->pPixmap = pPixmap;
+}
+
+void PictureInfoDialog::SetPasswordsShelter(PasswordsShelter * pPasswordsShelter)
+{
+    this->pPasswordsShelter = pPasswordsShelter;
 }
 
 void PictureInfoDialog::LoadPreview()
@@ -130,6 +136,14 @@ void PictureInfoDialog::OnWebServicePopup(bool b)
 
     if (pImageUploader)
     {
-
+        if (pImageUploader->CanUseLoginData())
+        {
+            //  this service can use login/password to access private account data
+            if (pPasswordsShelter->GetLoginPasswordForService(pImageUploader->GetServiceName(), strLogin, strPassword)
+                == false)
+            {
+                //  show passwords shelter new login/password dialog
+            }
+        }
     }
 }

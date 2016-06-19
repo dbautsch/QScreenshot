@@ -28,7 +28,14 @@ PasswordsShelter::PasswordsShelter()
 #ifdef WANT_SOME_TESTS
     //  very simple unit test
     RunTests();
+#else
+    ReadWebServiceData();
 #endif
+}
+
+PasswordsShelter::~PassswordsShelter()
+{
+    WriteWebServiceData();
 }
 
 bool PasswordsShelter::GetLoginPasswordForService(const QString    & strServiceName,

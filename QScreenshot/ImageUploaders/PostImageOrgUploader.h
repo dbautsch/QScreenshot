@@ -19,6 +19,10 @@ public:
 
     virtual QString             GetServiceName();
 
+    virtual bool                CanUseLoginData();
+
+    virtual bool                NeedLoginData();
+
 signals:
 
 public slots:

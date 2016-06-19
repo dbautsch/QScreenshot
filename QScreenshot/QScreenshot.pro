@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     PasswordsManagerDialog.cpp \
     ImageUploaders/ImageShackUploader.cpp \
     PasswordsShelter.cpp \
-    ImageUploaders/PostImageOrgUploader.cpp
+    ImageUploaders/PostImageOrgUploader.cpp \
+    RegisterAccountDataDialog.cpp
 
 HEADERS  += MainWindow.h \
     AboutDialog.h \
@@ -50,7 +51,8 @@ HEADERS  += MainWindow.h \
     PasswordsManagerDialog.h \
     ImageUploaders/ImageShackUploader.h \
     PasswordsShelter.h \
-    ImageUploaders/PostImageOrgUploader.h
+    ImageUploaders/PostImageOrgUploader.h \
+    RegisterAccountDataDialog.h
 
 FORMS    += MainWindow.ui \
     AboutDialog.ui \
@@ -58,7 +60,8 @@ FORMS    += MainWindow.ui \
     SettingsDialog.ui \
     ScreenRectDialog.ui \
     SignInDialog.ui \
-    PasswordsManagerDialog.ui
+    PasswordsManagerDialog.ui \
+    RegisterAccountDataDialog.ui
 
 RESOURCES += \
     resources.qrc

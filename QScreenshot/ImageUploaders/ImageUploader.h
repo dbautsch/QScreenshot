@@ -38,6 +38,10 @@ public:
 
     virtual QString             GetServiceName()                            = 0;
 
+    virtual bool                CanUseLoginData()                           = 0;    //!<    returns true if this service can use login/password data
+
+    virtual bool                NeedLoginData()                             = 0;    //!<    returns true if this service requires to enter login/password data
+
 
     static ServicesList         GetServices();
 

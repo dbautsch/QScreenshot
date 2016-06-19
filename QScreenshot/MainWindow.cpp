@@ -16,8 +16,6 @@
 #include "AboutDialog.h"
 #include "PictureInfoDialog.h"
 
-#include "PasswordsShelter.h"
-
 #include <QScreen>
 #include <QDebug>
 
@@ -27,21 +25,21 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    bCanClose   = false;
+    bCanClose           = false;
 
-    pShowHideTimer  = new QTimer(this);
+    pShowHideTimer      = new QTimer(this);
     pShowHideTimer->setInterval(300);
     pShowHideTimer->setSingleShot(true);
     connect(pShowHideTimer, SIGNAL(timeout()), this, SLOT(OnShowHideTimer()));
 
-    pScreenShot = new ScreenshotCreator(this);
+    pScreenShot         = new ScreenshotCreator(this);
 
     connect(this, SIGNAL(TakeNewScreenshot(EScreenshotKind)), pScreenShot, SLOT(TakeScreenshot(EScreenshotKind)));
     connect(pScreenShot, SIGNAL(ImageAvailable(QPixmap*)), this, SLOT(NewImageAvailable(QPixmap*)));
 
     CreateTrayIcon();
 
-    pSettings   = new SettingsDialog(this);
+    pSettings           = new SettingsDialog(this);
     pSettings->setModal(true);
 
     connect(this, SIGNAL(SaveApplicationGeometry(QPoint)), pSettings, SLOT(SaveApplicationGeometry(QPoint)));
@@ -49,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     pSettings->ReadSettings();
 
-    PasswordsShelter p;
+    pPasswordsShelter   = new PasswordsShelter();
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +56,7 @@ MainWindow::~MainWindow()
     delete pTray;
     delete pScreenShot;
     delete pTrayMenu;
+    delete pPasswordsShelter;
 }
 
 void MainWindow::closeEvent(QCloseEvent * e)

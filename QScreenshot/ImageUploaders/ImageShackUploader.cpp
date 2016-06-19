@@ -34,3 +34,13 @@ QString ImageShackUploader::GetServiceName()
 {
     return "imageshack.us";
 }
+
+bool ImageShackUploader::CanUseLoginData()
+{
+    return true;
+}
+
+bool ImageShackUploader::NeedLoginData()
+{
+    return true;
+}
