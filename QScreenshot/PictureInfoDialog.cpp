@@ -138,11 +138,14 @@ void PictureInfoDialog::OnWebServicePopup(bool b)
     {
         if (pImageUploader->CanUseLoginData())
         {
+            QString strLogin, strPassword;
+
             //  this service can use login/password to access private account data
             if (pPasswordsShelter->GetLoginPasswordForService(pImageUploader->GetServiceName(), strLogin, strPassword)
                 == false)
             {
                 //  show passwords shelter new login/password dialog
+
             }
         }
     }

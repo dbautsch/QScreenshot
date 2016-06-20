@@ -12,8 +12,11 @@ class RegisterAccountDataDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit RegisterAccountDataDialog(QWidget *parent = 0);
-    ~RegisterAccountDataDialog();
+    explicit        RegisterAccountDataDialog(QWidget *parent = 0);
+
+                    ~RegisterAccountDataDialog();
+
+    void            closeEvent(QCloseEvent *);
 
 private:
     Ui::RegisterAccountDataDialog *ui;

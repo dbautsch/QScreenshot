@@ -12,3 +12,8 @@ RegisterAccountDataDialog::~RegisterAccountDataDialog()
 {
     delete ui;
 }
+
+void RegisterAccountDataDialog::closeEvent(QCloseEvent *)
+{
+
+}

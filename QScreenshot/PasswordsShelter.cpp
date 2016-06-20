@@ -33,7 +33,7 @@ PasswordsShelter::PasswordsShelter()
 #endif
 }
 
-PasswordsShelter::~PassswordsShelter()
+PasswordsShelter::~PasswordsShelter()
 {
     WriteWebServiceData();
 }
@@ -599,3 +599,16 @@ void PasswordsShelter::PrintUCharData(const UCharData & data, const QString & st
 }
 
 #endif
+
+
+void PasswordsShelter::SetServiceExtraData(const UnicodeString     & strServiceName,
+                                           const ServiceExtraData  & sed)
+{
+
+}
+
+void PasswordsShelter::GetServiceExtraData(const UnicodeString     & strServiceName,
+                                           ServiceExtraData        & sed)
+{
+
+}

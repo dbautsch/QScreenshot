@@ -18,14 +18,22 @@
 
 typedef struct
 {
-   QString          strLogin;       //!<    login - plain text
+    bool            bAskForLoginData;   //!<    flag: ask for login/password data or not? (flag used only if the service can be accessed using no login/password).
+}
+ServiceExtraData;
 
-   QByteArray       baPassword;     //!<    password in an encrypted form
+typedef struct
+{
+   QString          strLogin;           //!<    login - plain text
 
-   QString          strServiceName; //!<    web service name, eg. imageshack.us
+   QByteArray       baPassword;         //!<    password in an encrypted form
 
-   QByteArray       baIV;           //!<    encryption initialisation vector used to encrypt password,
-                                    //!<    semi-random number generated each time a password is saved
+   QString          strServiceName;     //!<    web service name, eg. imageshack.us
+
+   QByteArray       baIV;               //!<    encryption initialisation vector used to encrypt password,
+                                        //!<    semi-random number generated each time a password is saved
+
+   ServiceExtraData extraData;
 }
 WebServiceData;
 
@@ -64,7 +72,7 @@ class PasswordsShelter
 public:
     PasswordsShelter();
 
-    ~PassswordsShelter();
+    ~PasswordsShelter();
 
     bool                GetLoginPasswordForService(const QString    & strServiceName,
                                                    QString          & strLogin,
@@ -73,6 +81,12 @@ public:
     void                SetLoginPasswordForService(const QString    & strServiceName,
                                                    const QString    & strLogin,
                                                    const QString    & strPassword);
+
+    void                SetServiceExtraData(const UnicodeString     & strServiceName,
+                                            const ServiceExtraData  & sed);
+
+    void                GetServiceExtraData(const UnicodeString     & strServiceName,
+                                            ServiceExtraData        & sed);
 
     void                SetSecretKey(const QByteArray &baSecretSHA);
 
