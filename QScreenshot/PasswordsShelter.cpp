@@ -601,14 +601,14 @@ void PasswordsShelter::PrintUCharData(const UCharData & data, const QString & st
 #endif
 
 
-void PasswordsShelter::SetServiceExtraData(const UnicodeString     & strServiceName,
-                                           const ServiceExtraData  & sed)
+void PasswordsShelter::SetServiceExtraData(const QString            & strServiceName,
+                                           const ServiceExtraData   & sed)
 {
 
 }
 
-void PasswordsShelter::GetServiceExtraData(const UnicodeString     & strServiceName,
-                                           ServiceExtraData        & sed)
+void PasswordsShelter::GetServiceExtraData(const QString            & strServiceName,
+                                           ServiceExtraData         & sed)
 {
 
 }

@@ -82,11 +82,11 @@ public:
                                                    const QString    & strLogin,
                                                    const QString    & strPassword);
 
-    void                SetServiceExtraData(const UnicodeString     & strServiceName,
+    void                SetServiceExtraData(const QString           & strServiceName,
                                             const ServiceExtraData  & sed);
 
-    void                GetServiceExtraData(const UnicodeString     & strServiceName,
-                                            ServiceExtraData        & sed);
+    void                GetServiceExtraData(const QString            & strServiceName,
+                                            ServiceExtraData         & sed);
 
     void                SetSecretKey(const QByteArray &baSecretSHA);
 
