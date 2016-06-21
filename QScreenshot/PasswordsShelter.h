@@ -18,7 +18,12 @@
 
 typedef struct
 {
-    bool            bAskForLoginData;   //!<    flag: ask for login/password data or not? (flag used only if the service can be accessed using no login/password).
+    bool            bAskForLoginData;   //!<    flag: ask for login/password data or not? (this flag can be used only if the service can be accessed using no login/password).
+
+    ServiceExtraData()
+    {
+        bAskForLoginData    = true;
+    }
 }
 ServiceExtraData;
 
@@ -33,7 +38,7 @@ typedef struct
    QByteArray       baIV;               //!<    encryption initialisation vector used to encrypt password,
                                         //!<    semi-random number generated each time a password is saved
 
-   ServiceExtraData extraData;
+   ServiceExtraData extraData;          //!<    additional data associated with service
 }
 WebServiceData;
 
@@ -85,7 +90,7 @@ public:
     void                SetServiceExtraData(const QString           & strServiceName,
                                             const ServiceExtraData  & sed);
 
-    void                GetServiceExtraData(const QString            & strServiceName,
+    bool                GetServiceExtraData(const QString            & strServiceName,
                                             ServiceExtraData         & sed);
 
     void                SetSecretKey(const QByteArray &baSecretSHA);

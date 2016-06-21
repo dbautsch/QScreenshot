@@ -223,6 +223,9 @@ void PasswordsShelter::ReadWebServiceData()
         wsd.baPassword          = settings.value("PASSWORD").toByteArray();
         wsd.baIV                = settings.value("IV").toByteArray();
 
+        //  read extra data for this service
+        wsd.extraData.bAskForLoginData  = settings.value("ASK_FOR_LOGIN_DATA", true).toBool();
+
         webServiceDataList.push_back(wsd);
     }
 }
@@ -243,6 +246,9 @@ void PasswordsShelter::WriteWebServiceData()
         settings.setValue("LOGIN", wsd.strLogin);
         settings.setValue("PASSWORD", wsd.baPassword);
         settings.setValue("IV", wsd.baIV);
+
+        //  save extra data for this service
+        settings.setValue("ASK_FOR_LOGIN_DATA", wsd.extraData.bAskForLoginData);
 
         ++i;
     }
@@ -291,6 +297,8 @@ bool PasswordsShelter::GenerateIV(QByteArray & baIV)
 
 QByteArray PasswordsShelter::CalculateSecrectSHA(const QString & strInput)
 {
+    //!<    calculate SHA256 hash of given input string.
+
     QByteArray baInput;
 
     baInput.append(strInput);
@@ -604,11 +612,47 @@ void PasswordsShelter::PrintUCharData(const UCharData & data, const QString & st
 void PasswordsShelter::SetServiceExtraData(const QString            & strServiceName,
                                            const ServiceExtraData   & sed)
 {
+    bool bFound                 = false;
 
+    foreach (WebServiceData & wsd, webServiceDataList)
+    {
+        if (wsd.strServiceName != strServiceName)
+            continue;
+
+        bFound                  = true;
+        wsd.extraData           = sed;
+
+        break;
+    }
+
+    if (bFound == false)
+    {
+        //  no extra data has been found - there is no such account in the system for given service
+        //  let's create an empty account
+        webServiceDataList.push_back(WebServiceData());
+
+        WebServiceData & wsd    = webServiceDataList.back();
+
+        wsd.strServiceName      = strServiceName;
+        wsd.extraData           = sed;
+    }
 }
 
-void PasswordsShelter::GetServiceExtraData(const QString            & strServiceName,
+bool PasswordsShelter::GetServiceExtraData(const QString            & strServiceName,
                                            ServiceExtraData         & sed)
 {
+    bool bFound                 = false;
 
+    foreach (const WebServiceData & wsd, webServiceDataList)
+    {
+        if (wsd.strServiceName != strServiceName)
+            continue;
+
+        sed                     = wsd.extraData;
+        bFound                  = true;
+
+        break;
+    }
+
+    return bFound;
 }
