@@ -12,9 +12,11 @@
 
 #include "PictureInfoDialog.h"
 #include "ui_PictureInfoDialog.h"
+#include "SignInDialog.h"
 
 #include <QFileDialog>
 #include <QDateTime>
+#include <QMessageBox>
 
 PictureInfoDialog::PictureInfoDialog(QWidget *parent) :
     QDialog(parent),
@@ -145,7 +147,37 @@ void PictureInfoDialog::OnWebServicePopup(bool b)
                 == false)
             {
                 //  show passwords shelter new login/password dialog
+                ServiceExtraData sed;
+                bool bShowDialog    = false;
 
+                bool bSED_OK        = pPasswordsShelter->GetServiceExtraData(pImageUploader->GetServiceName(), sed);
+
+                if (sed.bAskForLoginData == false)
+                {
+                    if (pImageUploader->NeedLoginData())
+                    {
+                        //  this service need a correct login/password pair
+                        QMessageBox::information(this, tr("Image upload"), tr("This web service need login/password. Please set login and password first."));
+                        bShowDialog = true;
+                    }
+                }
+                else
+                {
+                    bShowDialog     = true;
+                }
+
+                if (bShowDialog)
+                {
+                    SignInDialog signInDialog(this);
+
+                    signInDialog.ShowUseLoginPasswordBox(pImageUploader->NeedLoginData() == false);
+                    signInDialog.exec();
+                }
+
+                if (bSED_OK == false)
+                {
+                    //  service extra data was not found - save extra data into passwords shelter
+                }
             }
         }
     }

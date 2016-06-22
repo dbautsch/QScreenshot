@@ -46,8 +46,10 @@ bool PasswordsShelter::GetLoginPasswordForService(const QString    & strServiceN
      *  Get the pair - login and password for given web service name from the shelter.
      */
 
-    foreach (const WebServiceData & wsd, webServiceDataList)
+    for (int i = 0; i < webServiceDataList.size(); ++i)
     {
+        const WebServiceData & wsd = webServiceDataList[i];
+
         if (wsd.strServiceName != strServiceName)
             continue;
 
@@ -614,8 +616,10 @@ void PasswordsShelter::SetServiceExtraData(const QString            & strService
 {
     bool bFound                 = false;
 
-    foreach (WebServiceData & wsd, webServiceDataList)
+    for (int i = 0; i < webServiceDataList.size(); ++i)
     {
+        WebServiceData & wsd    = webServiceDataList[i];
+
         if (wsd.strServiceName != strServiceName)
             continue;
 

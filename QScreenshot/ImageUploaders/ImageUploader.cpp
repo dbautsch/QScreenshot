@@ -25,7 +25,7 @@ ServicesList ImageUploader::GetServices()
 
 ImageUploader * ImageUploader::CreateInstance(const QString & strServiceName)
 {
-    if (strServiceName == "imageshack.us")
+    if (strServiceName.toLower() == "imageshack.us")
         return new ImageShackUploader(nullptr);
 
     return nullptr;

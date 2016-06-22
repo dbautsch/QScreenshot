@@ -128,6 +128,7 @@ void MainWindow::NewImageAvailable(QPixmap * pImage)
     connect(&pictureInfoDialog, SIGNAL(SavePictureToFile(QString)), pScreenShot, SLOT(SaveToFile(QString)));
 
     pictureInfoDialog.SetImage(pImage);
+    pictureInfoDialog.SetPasswordsShelter(pPasswordsShelter);
     pictureInfoDialog.exec();
 }
 

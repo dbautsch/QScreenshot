@@ -25,7 +25,23 @@ SignInDialog::~SignInDialog()
     delete ui;
 }
 
+void SignInDialog::closeEvent(QCloseEvent *)
+{
+    ui->useLoginPasswordBox->setVisible(true);
+
+    ui->loginEdit->setEnabled(true);
+    ui->passwordEdit->setEnabled(true);
+}
+
 void SignInDialog::on_pushButton_clicked()
 {
     //!<    save login/password
+}
+
+void SignInDialog::ShowUseLoginPasswordBox(bool bShow)
+{
+    ui->useLoginPasswordBox->setVisible(bShow);
+
+    ui->loginEdit->setEnabled(bShow);
+    ui->passwordEdit->setEnabled(bShow);
 }

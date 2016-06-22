@@ -24,11 +24,16 @@ class SignInDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SignInDialog(QWidget *parent = 0);
-    ~SignInDialog();
+    explicit    SignInDialog(QWidget *parent = 0);
+
+                ~SignInDialog();
+
+    void        closeEvent(QCloseEvent *);
+
+    void        ShowUseLoginPasswordBox(bool bShow);
 
 private slots:
-    void on_pushButton_clicked();
+    void        on_pushButton_clicked();
 
 private:
     Ui::SignInDialog *ui;

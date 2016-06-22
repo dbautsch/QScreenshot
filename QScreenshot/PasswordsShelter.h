@@ -16,16 +16,16 @@
 #include <QString>
 #include <QList>
 
-typedef struct
+class ServiceExtraData
 {
+public:
     bool            bAskForLoginData;   //!<    flag: ask for login/password data or not? (this flag can be used only if the service can be accessed using no login/password).
 
     ServiceExtraData()
     {
         bAskForLoginData    = true;
     }
-}
-ServiceExtraData;
+};
 
 typedef struct
 {
