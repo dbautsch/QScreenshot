@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>192</height>
+    <width>649</width>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,17 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Name of the webpage service</string>
+        <string>Please enter your login and password data.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="logoWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
       </widget>
      </item>

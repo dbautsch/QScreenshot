@@ -26,7 +26,14 @@ typedef QList < QString > ServicesList;
 
 class ImageUploader : public QObject
 {
+private:
     Q_OBJECT
+
+protected:
+    QString                     strLogoResourcePath;
+
+    QString                     strLogin, strPassword;
+
 public:
     explicit                    ImageUploader(QObject *parent = 0);
 
@@ -41,6 +48,10 @@ public:
     virtual bool                CanUseLoginData()                           = 0;    //!<    returns true if this service can use login/password data
 
     virtual bool                NeedLoginData()                             = 0;    //!<    returns true if this service requires to enter login/password data
+
+    QString                     LogoResourcePath();
+
+    void                        SetLoginPassword(const QString & strLogin, const QString & strPassword);
 
 
     static ServicesList         GetServices();

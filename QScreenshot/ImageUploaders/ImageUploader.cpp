@@ -30,3 +30,16 @@ ImageUploader * ImageUploader::CreateInstance(const QString & strServiceName)
 
     return nullptr;
 }
+
+QString ImageUploader::LogoResourcePath()
+{
+    //!< Returns the resource path of the service logo.
+
+    return strLogoResourcePath;
+}
+
+void ImageUploader::SetLoginPassword(const QString & strLogin, const QString & strPassword)
+{
+    this->strLogin      = strLogin;
+    this->strPassword   = strPassword;
+}

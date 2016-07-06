@@ -15,7 +15,7 @@
 ImageShackUploader::ImageShackUploader(QObject *parent)
     : ImageUploader(parent)
 {
-
+    strLogoResourcePath = ":/services-thumbnails/imageshack.us.png";
 }
 
 void ImageShackUploader::UploadImage(QPixmap         * pPixmap,

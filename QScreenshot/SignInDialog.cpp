@@ -13,6 +13,9 @@
 #include "SignInDialog.h"
 #include "ui_SignInDialog.h"
 
+#include <QMessageBox>
+#include <QDebug>
+
 SignInDialog::SignInDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SignInDialog)
@@ -33,15 +36,44 @@ void SignInDialog::closeEvent(QCloseEvent *)
     ui->passwordEdit->setEnabled(true);
 }
 
-void SignInDialog::on_pushButton_clicked()
-{
-    //!<    save login/password
-}
-
 void SignInDialog::ShowUseLoginPasswordBox(bool bShow)
 {
     ui->useLoginPasswordBox->setVisible(bShow);
 
-    ui->loginEdit->setEnabled(bShow);
-    ui->passwordEdit->setEnabled(bShow);
+    ui->loginEdit->setEnabled(!bShow);
+    ui->passwordEdit->setEnabled(!bShow);
+}
+
+void SignInDialog::SetServiceLogo(const QString & strResourcePath)
+{
+    ui->logoWidget->setStyleSheet("QWidget{background-image: url(" + strResourcePath + "); background-repeat:none;}");
+}
+
+void SignInDialog::on_saveButton_clicked()
+{
+    //!<    save login/password
+
+    if (ui->loginEdit->text().trimmed().isEmpty() ||
+        ui->passwordEdit->text().trimmed().isEmpty()) {
+
+        QMessageBox::information(this, tr("Save password"), tr("Please fill all requiered fields."));
+        return;
+    }
+
+    close();
+}
+
+QString SignInDialog::LoginInputBox()
+{
+    return ui->loginEdit->text();
+}
+
+QString SignInDialog::PasswordInputBox()
+{
+    return ui->passwordEdit->text();
+}
+
+bool SignInDialog::UsePasswordsShelter()
+{
+    return ui->usePasswordsShelterBox->isChecked();
 }

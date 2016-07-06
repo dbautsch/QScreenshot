@@ -3,7 +3,7 @@
 PostImageOrgUploader::PostImageOrgUploader(QObject *Parent)
     : ImageUploader(Parent)
 {
-
+    strLogoResourcePath = ":/services-thumbnails/postimage.org.png";
 }
 
 void PostImageOrgUploader::UploadImage(QPixmap         * pPixmap,

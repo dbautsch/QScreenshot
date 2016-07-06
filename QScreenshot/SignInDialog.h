@@ -32,8 +32,17 @@ public:
 
     void        ShowUseLoginPasswordBox(bool bShow);
 
+    void        SetServiceLogo(const QString &strResourcePath);
+
+    QString     LoginInputBox();
+
+    QString     PasswordInputBox();
+
+    bool        UsePasswordsShelter();
+
 private slots:
-    void        on_pushButton_clicked();
+
+    void        on_saveButton_clicked();
 
 private:
     Ui::SignInDialog *ui;

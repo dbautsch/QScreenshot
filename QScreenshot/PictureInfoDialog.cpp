@@ -166,17 +166,42 @@ void PictureInfoDialog::OnWebServicePopup(bool b)
                     bShowDialog     = true;
                 }
 
+                bool bUsePasswordsShelter   = false;
+
                 if (bShowDialog)
                 {
                     SignInDialog signInDialog(this);
 
                     signInDialog.ShowUseLoginPasswordBox(pImageUploader->NeedLoginData() == false);
+                    signInDialog.SetServiceLogo(pImageUploader->LogoResourcePath());
+
                     signInDialog.exec();
+
+                    QString strLogin = signInDialog.LoginInputBox();
+                    QString strPassword = signInDialog.PasswordInputBox();
+
+                    if (strLogin.trimmed().isEmpty() || strPassword.isEmpty())
+                    {
+                        //  user did not filled all required fields.
+                        return;
+                    }
+
+                    if (signInDialog.UsePasswordsShelter())
+                    {
+                        //  saving password into the vault
+                        pPasswordsShelter->SetLoginPasswordForService(pImageUploader->GetServiceName(), strLogin, strPassword);
+                        bUsePasswordsShelter    = true;
+                    }
+
+                    pImageUploader->SetLoginPassword(strLogin, strPassword);
                 }
 
                 if (bSED_OK == false)
                 {
                     //  service extra data was not found - save extra data into passwords shelter
+                    sed.bAskForLoginData    = bUsePasswordsShelter;
+
+                    pPasswordsShelter->SetServiceExtraData(pImageUploader->GetServiceName(), sed);
                 }
             }
         }
