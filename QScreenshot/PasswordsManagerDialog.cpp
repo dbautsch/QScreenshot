@@ -12,6 +12,7 @@
 
 #include "PasswordsManagerDialog.h"
 #include "ui_PasswordsManagerDialog.h"
+#include "SecretPassphraseDialog.h"
 
 PasswordsManagerDialog::PasswordsManagerDialog(QWidget *parent) :
     QDialog(parent),
@@ -43,6 +44,13 @@ void PasswordsManagerDialog::on_pushButton_clicked()
 void PasswordsManagerDialog::on_pushButton_4_clicked()
 {
     //!<    go to secret passphrase setup dialog
+
+    SecretPassphraseDialog spd(this);
+    spd.setModal(true);
+    spd.exec();
+
+    if (spd.Password().isEmpty())
+        return;
 }
 
 void PasswordsManagerDialog::on_pushButton_5_clicked()
