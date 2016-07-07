@@ -20,7 +20,7 @@ ImageUploader::ImageUploader(QObject *parent) : QObject(parent)
 
 ServicesList ImageUploader::GetServices()
 {
-    return ServicesList { "ImageShack.us" };
+    return ServicesList { "ImageShack.us", "postimage.org" };
 }
 
 ImageUploader * ImageUploader::CreateInstance(const QString & strServiceName)
