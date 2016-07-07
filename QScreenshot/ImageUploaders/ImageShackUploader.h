@@ -24,9 +24,7 @@ class ImageShackUploader : public ImageUploader
 public:
                                 ImageShackUploader(QObject *parent = 0);
 
-    virtual void                UploadImage(QPixmap         * pPixmap,
-                                            const QString   & strUserName,
-                                            const QString   & strPassword);
+    virtual void                UploadImage(QPixmap * pPixmap);
 
     virtual QPixmap             GetServiceThumbnail();
 

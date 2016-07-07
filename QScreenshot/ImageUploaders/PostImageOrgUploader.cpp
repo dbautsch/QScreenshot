@@ -6,9 +6,7 @@ PostImageOrgUploader::PostImageOrgUploader(QObject *Parent)
     strLogoResourcePath = ":/services-thumbnails/postimage.org.png";
 }
 
-void PostImageOrgUploader::UploadImage(QPixmap         * pPixmap,
-                                       const QString   & strUserName,
-                                       const QString   & strPassword)
+void PostImageOrgUploader::UploadImage(QPixmap * pPixmap)
 {
 
 }

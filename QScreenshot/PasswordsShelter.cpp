@@ -50,7 +50,7 @@ bool PasswordsShelter::GetLoginPasswordForService(const QString    & strServiceN
     {
         const WebServiceData & wsd = webServiceDataList[i];
 
-        if (wsd.strServiceName != strServiceName)
+        if (wsd.strServiceName.toLower() != strServiceName.toLower())
             continue;
 
         strLogin    = wsd.strLogin;
@@ -224,6 +224,10 @@ void PasswordsShelter::ReadWebServiceData()
         wsd.strLogin            = settings.value("LOGIN").toString();
         wsd.baPassword          = settings.value("PASSWORD").toByteArray();
         wsd.baIV                = settings.value("IV").toByteArray();
+        wsd.strServiceName      = settings.value("SERVICE_NAME").toString();
+
+        if (wsd.strServiceName.trimmed().isEmpty())
+            continue;
 
         //  read extra data for this service
         wsd.extraData.bAskForLoginData  = settings.value("ASK_FOR_LOGIN_DATA", true).toBool();
@@ -248,6 +252,7 @@ void PasswordsShelter::WriteWebServiceData()
         settings.setValue("LOGIN", wsd.strLogin);
         settings.setValue("PASSWORD", wsd.baPassword);
         settings.setValue("IV", wsd.baIV);
+        settings.setValue("SERVICE_NAME", wsd.strServiceName);
 
         //  save extra data for this service
         settings.setValue("ASK_FOR_LOGIN_DATA", wsd.extraData.bAskForLoginData);

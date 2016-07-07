@@ -37,9 +37,7 @@ protected:
 public:
     explicit                    ImageUploader(QObject *parent = 0);
 
-    virtual void                UploadImage(QPixmap         * pPixmap,
-                                            const QString   & strUserName,
-                                            const QString   & strPassword)  = 0;
+    virtual void                UploadImage(QPixmap         * pPixmap)      = 0;
 
     virtual QPixmap             GetServiceThumbnail()                       = 0;
 

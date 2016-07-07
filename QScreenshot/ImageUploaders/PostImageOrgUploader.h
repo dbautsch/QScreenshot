@@ -11,9 +11,7 @@ class PostImageOrgUploader : public ImageUploader
 public:
                                 PostImageOrgUploader(QObject * Parent);
 
-    virtual void                UploadImage(QPixmap         * pPixmap,
-                                            const QString   & strUserName,
-                                            const QString   & strPassword);
+    virtual void                UploadImage(QPixmap * pPixmap);
 
     virtual QPixmap             GetServiceThumbnail();
 

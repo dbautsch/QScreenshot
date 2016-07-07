@@ -138,6 +138,8 @@ void PictureInfoDialog::OnWebServicePopup(bool b)
 
     if (pImageUploader)
     {
+        bool bCanUpload = false;
+
         if (pImageUploader->CanUseLoginData())
         {
             QString strLogin, strPassword;
@@ -193,17 +195,35 @@ void PictureInfoDialog::OnWebServicePopup(bool b)
                         bUsePasswordsShelter    = true;
                     }
 
+                    bCanUpload                  = true;
                     pImageUploader->SetLoginPassword(strLogin, strPassword);
                 }
 
                 if (bSED_OK == false)
                 {
                     //  service extra data was not found - save extra data into passwords shelter
-                    sed.bAskForLoginData    = bUsePasswordsShelter;
+                    sed.bAskForLoginData        = bUsePasswordsShelter;
 
                     pPasswordsShelter->SetServiceExtraData(pImageUploader->GetServiceName(), sed);
                 }
             }
+            else
+            {
+                //  login/password data has been successfully read
+                bCanUpload                      = true;
+                pImageUploader->SetLoginPassword(strLogin, strPassword);
+            }
+        }
+        else
+        {
+            //  this service doesn't need login data (may be optional, can be set using password shelter dialog)
+            bCanUpload                          = true;
+        }
+
+        if (bCanUpload)
+        {
+            //  now uploading the picture
+            pImageUploader->UploadImage(pPixmap);
         }
     }
 }
