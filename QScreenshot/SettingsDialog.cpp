@@ -13,6 +13,7 @@
 #include "SettingsDialog.h"
 #include "ui_SettingsDialog.h"
 #include "MainWindow.h"
+#include "PasswordsManagerDialog.h"
 
 #include <QSettings>
 
@@ -93,4 +94,14 @@ void SettingsDialog::SaveApplicationGeometry(const QPoint & ptPos)
 
     settings.setValue("GEOMETRY_LEFT", ptPos.x());
     settings.setValue("GEOMETRY_TOP", ptPos.y());
+}
+
+void SettingsDialog::on_pushButton_2_clicked()
+{
+    //!< show passwords shelter dialog
+
+    PasswordsManagerDialog pmd(this);
+
+    pmd.setModal(true);
+    pmd.exec();
 }

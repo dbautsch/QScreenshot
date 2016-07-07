@@ -48,6 +48,8 @@ private slots:
 
     void                    on_horizontalSlider_2_valueChanged(int value);
 
+    void on_pushButton_2_clicked();
+
 public slots:
     void                    SaveApplicationGeometry(const QPoint & ptPos);
 
