@@ -24,28 +24,36 @@ class SignInDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit    SignInDialog(QWidget *parent = 0);
+    explicit            SignInDialog(QWidget *parent = 0);
 
-                ~SignInDialog();
+                        ~SignInDialog();
 
-    void        closeEvent(QCloseEvent *);
+    void                showEvent(QShowEvent *);
 
-    void        ShowUseLoginPasswordBox(bool bShow);
+    void                closeEvent(QCloseEvent *);
 
-    void        SetServiceLogo(const QString &strResourcePath);
+    void                ShowUseLoginPasswordBox(bool bShow);
 
-    QString     LoginInputBox();
+    void                ShowServiceCombo(bool bShow);
 
-    QString     PasswordInputBox();
+    void                SetServiceLogo(const QString &strResourcePath);
 
-    bool        UsePasswordsShelter();
+    QString             LoginInputBox();
+
+    QString             PasswordInputBox();
+
+    QString             ServiceBox();
+
+    bool                UsePasswordsShelter();
 
 private slots:
 
-    void        on_saveButton_clicked();
+    void                on_saveButton_clicked();
 
 private:
-    Ui::SignInDialog *ui;
+    Ui::SignInDialog *  ui;
+
+    void                FillServicesCombo();
 };
 
 #endif // SIGNINDIALOG_H

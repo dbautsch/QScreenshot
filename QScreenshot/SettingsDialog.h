@@ -18,6 +18,8 @@
 static const QString SETTINGS_ORGANIZATION  = QString("Dawid Bautsch");
 static const QString SETTINGS_APPLICATION   = QString("QScreenshot");
 
+class PasswordsShelter;
+
 namespace Ui {
 class SettingsDialog;
 }
@@ -37,6 +39,8 @@ public:
 
     void                    WriteSettings();
 
+    void                    SetPasswordsShelter(PasswordsShelter * pPasswordsShelter);
+
 private slots:
     void                    on_pushButton_clicked();
 
@@ -48,7 +52,7 @@ private slots:
 
     void                    on_horizontalSlider_2_valueChanged(int value);
 
-    void on_pushButton_2_clicked();
+    void                    on_pushButton_2_clicked();
 
 public slots:
     void                    SaveApplicationGeometry(const QPoint & ptPos);
@@ -58,6 +62,8 @@ signals:
 
 private:
     Ui::SettingsDialog  *    ui;
+
+    PasswordsShelter    *   pPasswordsShelter;
 };
 
 #endif // SETTINGSDIALOG_H

@@ -22,6 +22,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
+
+    pPasswordsShelter = nullptr;
 }
 
 SettingsDialog::~SettingsDialog()
@@ -102,6 +104,16 @@ void SettingsDialog::on_pushButton_2_clicked()
 
     PasswordsManagerDialog pmd(this);
 
+    this->setHidden(true);
+
     pmd.setModal(true);
+    pmd.SetPasswordsShelter(pPasswordsShelter);
     pmd.exec();
+
+    this->setHidden(false);
+}
+
+void SettingsDialog::SetPasswordsShelter(PasswordsShelter * pPasswordsShelter)
+{
+    this->pPasswordsShelter = pPasswordsShelter;
 }

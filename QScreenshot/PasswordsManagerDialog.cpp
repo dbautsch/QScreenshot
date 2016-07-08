@@ -13,12 +13,16 @@
 #include "PasswordsManagerDialog.h"
 #include "ui_PasswordsManagerDialog.h"
 #include "SecretPassphraseDialog.h"
+#include "SignInDialog.h"
+#include "PasswordsShelter.h"
 
 PasswordsManagerDialog::PasswordsManagerDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PasswordsManagerDialog)
 {
     ui->setupUi(this);
+
+    pPasswordsShelter = nullptr;
 }
 
 PasswordsManagerDialog::~PasswordsManagerDialog()
@@ -56,4 +60,20 @@ void PasswordsManagerDialog::on_pushButton_4_clicked()
 void PasswordsManagerDialog::on_pushButton_5_clicked()
 {
     //!<    create new login/password pair for given service name
+
+    SignInDialog sid(this);
+
+    sid.ShowServiceCombo(true);
+    sid.exec();
+
+    QString strLogin    = sid.LoginInputBox();
+    QString strPassword = sid.PasswordInputBox();
+    QString strService  = sid.ServiceBox();
+
+
+}
+
+void PasswordsManagerDialog::SetPasswordsShelter(PasswordsShelter * pPasswordsShelter)
+{
+    this->pPasswordsShelter = pPasswordsShelter;
 }

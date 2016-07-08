@@ -12,6 +12,7 @@
 
 #include "SignInDialog.h"
 #include "ui_SignInDialog.h"
+#include "ImageUploaders/ImageUploader.h"
 
 #include <QMessageBox>
 #include <QDebug>
@@ -21,11 +22,19 @@ SignInDialog::SignInDialog(QWidget *parent) :
     ui(new Ui::SignInDialog)
 {
     ui->setupUi(this);
+
+    ShowServiceCombo(false);
 }
 
 SignInDialog::~SignInDialog()
 {
     delete ui;
+}
+
+void SignInDialog::showEvent(QShowEvent *)
+{
+    if (ui->serviceCombo->isVisible())
+        FillServicesCombo();
 }
 
 void SignInDialog::closeEvent(QCloseEvent *)
@@ -34,6 +43,8 @@ void SignInDialog::closeEvent(QCloseEvent *)
 
     ui->loginEdit->setEnabled(true);
     ui->passwordEdit->setEnabled(true);
+
+    ShowServiceCombo(false);
 }
 
 void SignInDialog::ShowUseLoginPasswordBox(bool bShow)
@@ -42,6 +53,15 @@ void SignInDialog::ShowUseLoginPasswordBox(bool bShow)
 
     ui->loginEdit->setEnabled(!bShow);
     ui->passwordEdit->setEnabled(!bShow);
+}
+
+void SignInDialog::ShowServiceCombo(bool bShow)
+{
+    //!< Show an extra control with the list of available services.
+    //!< Used only when user want to add new service data to the list.
+
+    ui->label_4->setVisible(bShow);
+    ui->serviceCombo->setVisible(bShow);
 }
 
 void SignInDialog::SetServiceLogo(const QString & strResourcePath)
@@ -60,20 +80,49 @@ void SignInDialog::on_saveButton_clicked()
         return;
     }
 
+    if (ui->serviceCombo->isVisible() && ui->serviceCombo->currentIndex() < 0)
+    {
+        QMessageBox::information(this, tr("Save password"), tr("Please select web service name."));
+        return;
+    }
+
     close();
 }
 
 QString SignInDialog::LoginInputBox()
 {
+    //!< Get the login entered by user.
+
     return ui->loginEdit->text();
 }
 
 QString SignInDialog::PasswordInputBox()
 {
+    //!< Get the password entered by user.
+
     return ui->passwordEdit->text();
+}
+
+QString SignInDialog::ServiceBox()
+{
+    //!< Get the service choosen by user.
+
+    return ui->serviceCombo->currentText();
 }
 
 bool SignInDialog::UsePasswordsShelter()
 {
     return ui->usePasswordsShelterBox->isChecked();
+}
+
+void SignInDialog::FillServicesCombo()
+{
+    ServicesList services = ImageUploader::GetServices();
+
+    ui->serviceCombo->clear();
+
+    foreach (const QString & strService, services)
+    {
+        ui->serviceCombo->addItem(strService);
+    }
 }

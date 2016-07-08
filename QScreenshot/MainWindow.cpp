@@ -39,15 +39,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     CreateTrayIcon();
 
+    pPasswordsShelter   = new PasswordsShelter();
+
     pSettings           = new SettingsDialog(this);
     pSettings->setModal(true);
+    pSettings->SetPasswordsShelter(pPasswordsShelter);
 
     connect(this, SIGNAL(SaveApplicationGeometry(QPoint)), pSettings, SLOT(SaveApplicationGeometry(QPoint)));
     connect(pSettings, SIGNAL(RestoreApplicationGeometry(QPoint)), this, SLOT(RestoreApplicationGeometry(QPoint)));
 
     pSettings->ReadSettings();
-
-    pPasswordsShelter   = new PasswordsShelter();
 }
 
 MainWindow::~MainWindow()
