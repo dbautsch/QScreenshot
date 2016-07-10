@@ -46,6 +46,8 @@ public:
 
     bool                UsePasswordsShelter();
 
+    void                SetLogin(const QString & strLogin);
+
 private slots:
 
     void                on_saveButton_clicked();

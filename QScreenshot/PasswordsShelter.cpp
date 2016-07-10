@@ -665,3 +665,23 @@ bool PasswordsShelter::GetServiceExtraData(const QString            & strService
 
     return bFound;
 }
+
+int PasswordsShelter::GetServicesCount()
+{
+    //!< Get the number of registered services info in the passwords shelter.
+
+    return webServiceDataList.size();
+}
+
+void PasswordsShelter::GetServiceAt(int iIDX, QString & strServiceName)
+{
+    //!< Get name of the service at given index. May not return correct
+    //! values, when the index is wrong.
+
+    if (iIDX < 0 || iIDX >= webServiceDataList.size())
+        return;
+
+    const WebServiceData & wsd = webServiceDataList[iIDX];
+
+    return wsd.strServiceName;
+}

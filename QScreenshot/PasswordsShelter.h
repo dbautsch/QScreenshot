@@ -95,6 +95,10 @@ public:
 
     void                SetSecretKey(const QByteArray &baSecretSHA);
 
+    int                 GetServicesCount();
+
+    void                GetServiceAt(int iIDX, QString & strServiceName);
+
     static QByteArray   CalculateSecrectSHA(const QString & strInput);
 
 private:

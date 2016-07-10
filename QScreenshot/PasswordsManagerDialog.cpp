@@ -30,6 +30,11 @@ PasswordsManagerDialog::~PasswordsManagerDialog()
     delete ui;
 }
 
+void PasswordsManagerDialog::showEvent(QShowEvent *)
+{
+    RefreshContents();
+}
+
 void PasswordsManagerDialog::on_pushButton_2_clicked()
 {
     //!<    edit selected login/password pair
@@ -70,10 +75,26 @@ void PasswordsManagerDialog::on_pushButton_5_clicked()
     QString strPassword = sid.PasswordInputBox();
     QString strService  = sid.ServiceBox();
 
-
+    pPasswordsShelter->SetLoginPasswordForService(strService, strLogin, strPassword);
 }
 
 void PasswordsManagerDialog::SetPasswordsShelter(PasswordsShelter * pPasswordsShelter)
 {
     this->pPasswordsShelter = pPasswordsShelter;
+}
+
+void PasswordsManagerDialog::RefreshContents()
+{
+    ui->accountsTable->clear();
+    ui->accountsTable->setRowCount(pPasswordsShelter->GetServicesCount());
+
+    for (int i = 0; i < pPasswordsShelter->GetServicesCount(); ++i)
+    {
+        QString strService, strLogin, strPassword;
+
+        pPasswordsShelter->GetServiceAt(i, strService);
+        pPasswordsShelter->GetLoginPasswordForService(strService, strLogin, strPassword);
+
+
+    }
 }

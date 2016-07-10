@@ -126,3 +126,8 @@ void SignInDialog::FillServicesCombo()
         ui->serviceCombo->addItem(strService);
     }
 }
+
+void SignInDialog::SetLogin(const QString & strLogin)
+{
+    ui->loginEdit->setText(strLogin);
+}
