@@ -30,6 +30,8 @@ public:
 
     QString         Password();
 
+    bool            RememberPassword();
+
 private slots:
     void            on_SaveButton_clicked();
 

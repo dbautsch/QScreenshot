@@ -302,13 +302,20 @@ bool PasswordsShelter::GenerateIV(QByteArray & baIV)
     return true;
 }
 
-QByteArray PasswordsShelter::CalculateSecrectSHA(const QString & strInput)
+QByteArray PasswordsShelter::CalculateSecretSHA(const QString & strInput)
 {
     //!<    calculate SHA256 hash of given input string.
 
     QByteArray baInput;
 
     baInput.append(strInput);
+
+    return CalculateSecretSHA(baInput);
+}
+
+QByteArray PasswordsShelter::CalculateSecretSHA(const QByteArray & baInput)
+{
+    //!< calculate SHA256 hash of given input data.
 
     return QCryptographicHash::hash(baInput, QCryptographicHash::Sha256);
 }
@@ -683,5 +690,29 @@ void PasswordsShelter::GetServiceAt(int iIDX, QString & strServiceName)
 
     const WebServiceData & wsd = webServiceDataList[iIDX];
 
-    return wsd.strServiceName;
+    strServiceName = wsd.strServiceName;
+}
+
+void PasswordsShelter::DeleteServiceInfo(const QString & strServiceName)
+{
+    //!<    Remove service data from container. Does not affect configuration
+    //!     file. SubmitChanges() must be called after the execution.
+
+    for (int i = 0; i < webServiceDataList.size(); ++i)
+    {
+        const WebServiceData & wsd = webServiceDataList[i];
+
+        if (wsd.strServiceName != strServiceName)
+            continue;
+
+        webServiceDataList.removeAt(i);
+        break;
+    }
+}
+
+void PasswordsShelter::SubmitChanges()
+{
+    //!<    Write all changes to configuration file.
+
+    WriteWebServiceData();
 }

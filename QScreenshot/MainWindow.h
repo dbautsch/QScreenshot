@@ -38,6 +38,8 @@ public:
 
     void                    closeEvent(QCloseEvent * e);
 
+    SettingsDialog      *   GetSettingsDialog();
+
 private slots:
     void                    NewImageAvailable(QPixmap *pImage);
 

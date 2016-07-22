@@ -99,7 +99,13 @@ public:
 
     void                GetServiceAt(int iIDX, QString & strServiceName);
 
-    static QByteArray   CalculateSecrectSHA(const QString & strInput);
+    void                DeleteServiceInfo(const QString & strServiceName);
+
+    void                SubmitChanges();
+
+    static QByteArray   CalculateSecretSHA(const QString & strInput);
+
+    static QByteArray   CalculateSecretSHA(const QByteArray & baInput);
 
 private:
     WebServiceDataList  webServiceDataList;

@@ -17,6 +17,8 @@
 
 class PasswordsShelter;
 
+class SettingsDialog;
+
 namespace Ui {
 class PasswordsManagerDialog;
 }
@@ -34,6 +36,8 @@ public:
 
     void                    showEvent(QShowEvent *);
 
+    void                    SetSettingsDialog(SettingsDialog * pSettings);
+
 private slots:
     void                    on_pushButton_2_clicked();
 
@@ -49,6 +53,8 @@ private:
     Ui::PasswordsManagerDialog *ui;
 
     PasswordsShelter    *   pPasswordsShelter;
+
+    SettingsDialog      *   pSettings;
 
 
     void                    RefreshContents();

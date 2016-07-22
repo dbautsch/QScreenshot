@@ -41,6 +41,14 @@ public:
 
     void                    SetPasswordsShelter(PasswordsShelter * pPasswordsShelter);
 
+    void                    SetSecretPassphrase(const QByteArray & baPassphraseSHA);
+
+    void                    SetSecretPassphraseSHA(const QByteArray & baPassphraseSHA);
+
+    void                    GetSecretPasspphrase(QByteArray & baPassphraseSHA);
+
+    void                    GetSecretPassphraseSHA(QByteArray & baPassphraseSHA);
+
 private slots:
     void                    on_pushButton_clicked();
 
@@ -63,7 +71,13 @@ signals:
 private:
     Ui::SettingsDialog  *    ui;
 
-    PasswordsShelter    *   pPasswordsShelter;
+    PasswordsShelter    *    pPasswordsShelter;
+
+    QByteArray              baSecretSHA;        //!< secret passphrase (SHA calculated of the secret pass) used to encrypt passwords in password manager class
+                                                //!< will be set only if user has set the option "always remember" in the secret passphrase dialog
+
+    QByteArray              baSecretSHA2;       //!< SHA shortcut calculated from secret passphrase SHA. It is used to check if user has entered correct password in the
+                                                //!< passwords manager dialog, it is set when user has set the option "always remember" to false in the secret passphrase dialog.
 };
 
 #endif // SETTINGSDIALOG_H

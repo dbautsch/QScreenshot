@@ -51,3 +51,8 @@ QString SecretPassphraseDialog::Password()
 {
     return ui->password1Edit->text();
 }
+
+bool SecretPassphraseDialog::RememberPassword()
+{
+    return ui->rememberPasswordBox->isChecked();
+}

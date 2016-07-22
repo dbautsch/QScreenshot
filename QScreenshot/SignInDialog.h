@@ -38,6 +38,8 @@ public:
 
     void                SetServiceLogo(const QString &strResourcePath);
 
+    void                SetService(const QString & strService);
+
     QString             LoginInputBox();
 
     QString             PasswordInputBox();
@@ -54,6 +56,9 @@ private slots:
 
 private:
     Ui::SignInDialog *  ui;
+
+    QString             strService;
+
 
     void                FillServicesCombo();
 };

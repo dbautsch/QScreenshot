@@ -107,7 +107,7 @@
      <item>
       <widget class="QLineEdit" name="passwordEdit">
        <property name="inputMask">
-        <string>#</string>
+        <string/>
        </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>

@@ -212,3 +212,8 @@ void MainWindow::RestoreApplicationGeometry(const QPoint & ptPos)
     if (bNeedToSave)
         pSettings->SaveApplicationGeometry(ptPosOK);
 }
+
+SettingsDialog * MainWindow::GetSettingsDialog()
+{
+    return pSettings;
+}

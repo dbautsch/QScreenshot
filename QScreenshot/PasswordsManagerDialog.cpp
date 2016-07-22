@@ -15,6 +15,10 @@
 #include "SecretPassphraseDialog.h"
 #include "SignInDialog.h"
 #include "PasswordsShelter.h"
+#include "SettingsDialog.h"
+
+#include <QMessageBox>
+#include <QTableWidgetItem>
 
 PasswordsManagerDialog::PasswordsManagerDialog(QWidget *parent) :
     QDialog(parent),
@@ -22,7 +26,8 @@ PasswordsManagerDialog::PasswordsManagerDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    pPasswordsShelter = nullptr;
+    pPasswordsShelter   = nullptr;
+    pSettings           = nullptr;
 }
 
 PasswordsManagerDialog::~PasswordsManagerDialog()
@@ -38,16 +43,55 @@ void PasswordsManagerDialog::showEvent(QShowEvent *)
 void PasswordsManagerDialog::on_pushButton_2_clicked()
 {
     //!<    edit selected login/password pair
+
+    if (ui->accountsTable->currentRow() < 0)
+        return;
+
+    QString strService    = ui->accountsTable->item(ui->accountsTable->currentRow(), 2)->text();
+    QString strLogin      = ui->accountsTable->item(ui->accountsTable->currentRow(), 0)->text();
+
+    SignInDialog sid(this);
+
+    sid.ShowServiceCombo(false);
+    sid.SetLogin(strLogin);
+    sid.SetService(strService);
+    sid.exec();
+
+    QString strLogin    = sid.LoginInputBox();
+    QString strService  = sid.ServiceBox();
+
+    if (strLogin.isEmpty() || strPassword.isEmpty() || strService.isEmpty())
+        return;
+
+    pPasswordsShelter->SetLoginPasswordForService(strService, strLogin, strPassword);
 }
 
 void PasswordsManagerDialog::on_pushButton_3_clicked()
 {
     //!<    delete selected login/password pair
+
+    if (ui->accountsTable->currentRow() < 0)
+        return;
+
+    if (QMessageBox::question(this, ("Delete item"), tr("Are you sure you want to delete selected service details?"))
+            != QMessageBox::Yes)
+    {
+        //  user has cancelled
+        return;
+    }
+
+    QTableWidgetItem * pItem    = ui->accountsTable->item(ui->accountsTable->currentRow(), 2);
+    QString strService          = pItem->text();
+
+    pPasswordsShelter->DeleteServiceInfo(strService);
+    RefreshContents();
 }
 
 void PasswordsManagerDialog::on_pushButton_clicked()
 {
     //!<    save results
+
+    pPasswordsShelter->SubmitChanges();
 }
 
 void PasswordsManagerDialog::on_pushButton_4_clicked()
@@ -75,6 +119,9 @@ void PasswordsManagerDialog::on_pushButton_5_clicked()
     QString strPassword = sid.PasswordInputBox();
     QString strService  = sid.ServiceBox();
 
+    if (strLogin.isEmpty() || strPassword.isEmpty() || strService.isEmpty())
+        return;
+
     pPasswordsShelter->SetLoginPasswordForService(strService, strLogin, strPassword);
 }
 
@@ -87,6 +134,7 @@ void PasswordsManagerDialog::RefreshContents()
 {
     ui->accountsTable->clear();
     ui->accountsTable->setRowCount(pPasswordsShelter->GetServicesCount());
+    ui->accountsTable->setColumnCount(3);
 
     for (int i = 0; i < pPasswordsShelter->GetServicesCount(); ++i)
     {
@@ -95,6 +143,18 @@ void PasswordsManagerDialog::RefreshContents()
         pPasswordsShelter->GetServiceAt(i, strService);
         pPasswordsShelter->GetLoginPasswordForService(strService, strLogin, strPassword);
 
+        QString strPasswordDot;
 
+        for (int i = 0; i < strPassword.length(); ++i)
+            strPasswordDot += QString::fromStdWString(L"\x2022");
+
+        ui->accountsTable->setItem(i, 0, new QTableWidgetItem(strService));
+        ui->accountsTable->setItem(i, 1, new QTableWidgetItem(strLogin));
+        ui->accountsTable->setItem(i, 2, new QTableWidgetItem(strPasswordDot));
     }
+}
+
+void PasswordsManagerDialog::SetSettingsDialog(SettingsDialog * pSettings)
+{
+    this->pSettings = pSettings;
 }

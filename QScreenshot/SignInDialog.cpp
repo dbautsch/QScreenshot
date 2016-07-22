@@ -45,6 +45,8 @@ void SignInDialog::closeEvent(QCloseEvent *)
     ui->passwordEdit->setEnabled(true);
 
     ShowServiceCombo(false);
+
+    strService.clear();
 }
 
 void SignInDialog::ShowUseLoginPasswordBox(bool bShow)
@@ -130,4 +132,9 @@ void SignInDialog::FillServicesCombo()
 void SignInDialog::SetLogin(const QString & strLogin)
 {
     ui->loginEdit->setText(strLogin);
+}
+
+void SignInDialog::SetService(const QString & strService)
+{
+    this->strService = strService;
 }
